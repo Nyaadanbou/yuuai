@@ -1,0 +1,4 @@
+orientation:
+  color: "green"
+  style: "solid"
+  text: "新人保护: <value>"

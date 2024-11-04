@@ -11,6 +11,7 @@ guava = "33.2.1-jre"
 gson = "2.10.1"
 slf4j = "2.0.12"
 helper = "6.0.0"
+scoreboardlibrary = "2.2.1"
 
 [libraries]
 
@@ -33,12 +34,19 @@ helper = { group = "me.lucko", name = "helper", version.ref = "helper" }
 kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinx-coroutines-core" }
 kotlinx-atomicfu = { group = "org.jetbrains.kotlinx", name = "atomicfu", version.ref = "kotlinx-atomicfu" }
 
-koin-core = { group = "io.insert-koin", name = "koin-core", version.ref = "koin" }
-koin-test = { group = "io.insert-koin", name = "koin-test", version.ref = "koin" }
-koin-test-junit5 = { group = "io.insert-koin", name = "koin-test-junit5", version.ref = "koin" }
+koin-bom = { group = "io.insert-koin", name = "koin-bom", version.ref = "koin" }
+koin-core = { group = "io.insert-koin", name = "koin-core" }
+koin-core-coroutines = { group = "io.insert-koin", name = "koin-core-coroutines" }
+koin-test = { group = "io.insert-koin", name = "koin-test" }
+koin-test-junit5 = { group = "io.insert-koin", name = "koin-test-junit5" }
 
 paper = { group = "io.papermc.paper", name = "paper-api", version.ref = "paper" }
 velocity = { group = "com.velocitypowered", name = "velocity-api", version.ref = "velocity" }
+
+scoreboardlibrary-api = { group = "net.megavex", name = "scoreboard-library-api", version.ref = "scoreboardlibrary" }
+scoreboardlibrary-implementation = { group = "net.megavex", name = "scoreboard-library-implementation", version.ref = "scoreboardlibrary" }
+scoreboardlibrary-extra-kotlin = { group = "net.megavex", name = "scoreboard-library-extra-kotlin", version.ref = "scoreboardlibrary" }
+scoreboardlibrary-adapter-modern = { group = "net.megavex", name = "scoreboard-library-modern", version.ref = "scoreboardlibrary" }
 
 [plugins]
 
