@@ -21,6 +21,15 @@ class ScoreboardConfig(
                 logger.warn("Unknown scoreboard part: $key")
                 continue
             }
+
+            when (val checkResult = partFactory.check(node)) {
+                is ScoreboardPartCheckResult.Success -> Unit
+                is ScoreboardPartCheckResult.MissingDependency -> {
+                    logger.warn("Missing dependency for scoreboard part: $key, dependencies: ${checkResult.missingDependencies}")
+                    continue
+                }
+            }
+
             runCatching { partFactory.create(node) }
                 .onFailure { logger.warn("Failed to create scoreboard part: $key", it) }
                 .onSuccess { parts.add(it) }

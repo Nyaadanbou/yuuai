@@ -48,8 +48,14 @@ class ScoreboardManager : KoinComponent {
                     is SidebarComponentResult.Success -> {
                         sidebarComponentBuilder.addComponent(result.value)
                     }
+                    // FIXME: 更好的处理每个部分的错误, 将真正的配置错误与正常逻辑的处理区分开
+                    is SidebarComponentResult.InvalidNamespace -> {
+                        // plugin.componentLogger.warn("Invalid namespace: ${result.input}, expected: ${result.correctNamespace}")
+                    }
 
-                    else -> continue
+                    is SidebarComponentResult.InvalidValues -> {
+                        // plugin.componentLogger.warn("Invalid values: ${result.input}, expected: ${result.correctValues}")
+                    }
                 }
             }
         }

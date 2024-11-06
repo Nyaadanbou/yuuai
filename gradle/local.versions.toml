@@ -43,6 +43,8 @@ koin-test-junit5 = { group = "io.insert-koin", name = "koin-test-junit5" }
 paper = { group = "io.papermc.paper", name = "paper-api", version.ref = "paper" }
 velocity = { group = "com.velocitypowered", name = "velocity-api", version.ref = "velocity" }
 
+economy-api = { group = "cc.mewcraft.economy", name = "economy-api", version = "2.0.1" }
+
 scoreboardlibrary-api = { group = "net.megavex", name = "scoreboard-library-api", version.ref = "scoreboardlibrary" }
 scoreboardlibrary-implementation = { group = "net.megavex", name = "scoreboard-library-implementation", version.ref = "scoreboardlibrary" }
 scoreboardlibrary-extra-kotlin = { group = "net.megavex", name = "scoreboard-library-extra-kotlin", version.ref = "scoreboardlibrary" }

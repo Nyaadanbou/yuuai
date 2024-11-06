@@ -1,4 +1,5 @@
 import net.minecrell.pluginyml.bukkit.BukkitPluginDescription
+import net.minecrell.pluginyml.paper.PaperPluginDescription.RelativeLoadOrder
 
 plugins {
     id("yuuai-conventions.commons")
@@ -16,6 +17,8 @@ dependencies {
     compileOnly(local.paper)
 
     // external
+    compileOnly(local.economy.api)
+
     implementation(platform(libs.bom.configurate.yaml))
     implementation(platform(libs.bom.configurate.kotlin))
 
@@ -41,6 +44,10 @@ paper {
     apiVersion = "1.21"
     author = "g2213swo"
     load = BukkitPluginDescription.PluginLoadOrder.POSTWORLD
-    // serverDependencies {
-    // }
+    serverDependencies {
+        register("Economy") {
+            required = false
+            load = RelativeLoadOrder.BEFORE
+        }
+    }
 }
