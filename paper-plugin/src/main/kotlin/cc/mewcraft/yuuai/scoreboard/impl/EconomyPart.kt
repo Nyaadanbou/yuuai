@@ -8,6 +8,7 @@ import cc.mewcraft.yuuai.scoreboard.ScoreboardPartFactory
 import cc.mewcraft.yuuai.scoreboard.SidebarComponentResult
 import cc.mewcraft.yuuai.scoreboard.impl.EconomyPart.Companion.NAMESPACE
 import net.kyori.adventure.key.Key
+import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.minimessage.MiniMessage
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder
 import net.megavex.scoreboardlibrary.api.sidebar.component.SidebarComponent

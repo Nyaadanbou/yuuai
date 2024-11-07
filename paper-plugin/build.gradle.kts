@@ -16,16 +16,28 @@ dependencies {
     // server
     compileOnly(local.paper)
 
-    // external
+    /* external */
+
+    compileOnly(local.helper)
     compileOnly(local.economy.api)
 
+    /* internal */
+
+    // configurate
     implementation(platform(libs.bom.configurate.yaml))
     implementation(platform(libs.bom.configurate.kotlin))
 
+    // cloud
+    implementation(platform(libs.bom.cloud.paper))
+    implementation(platform(libs.bom.cloud.kotlin)) {
+        exclude("org.jetbrains.kotlin")
+        exclude("org.jetbrains.kotlinx")
+    }
+
+    // scoreboard
     implementation(local.scoreboardlibrary.api)
     implementation(local.scoreboardlibrary.implementation)
     implementation(local.scoreboardlibrary.extra.kotlin)
-
     implementation(variantOf(local.scoreboardlibrary.adapter.modern) { classifier("mojmap") })
 }
 

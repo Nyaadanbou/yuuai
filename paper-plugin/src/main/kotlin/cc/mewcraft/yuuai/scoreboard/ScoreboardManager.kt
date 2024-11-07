@@ -43,21 +43,26 @@ class ScoreboardManager : KoinComponent {
 
         for (line in layout) {
             val lineKey = Key.key(line)
-            for (part in scoreboardParts) {
+            val sidebarComponent = scoreboardParts.mapNotNull { part ->
                 when (val result = part.sidebarComponent(lineKey, player)) {
                     is SidebarComponentResult.Success -> {
-                        sidebarComponentBuilder.addComponent(result.value)
-                    }
-                    // FIXME: 更好的处理每个部分的错误, 将真正的配置错误与正常逻辑的处理区分开
-                    is SidebarComponentResult.InvalidNamespace -> {
-                        // plugin.componentLogger.warn("Invalid namespace: ${result.input}, expected: ${result.correctNamespace}")
+                        result.value
                     }
 
-                    is SidebarComponentResult.InvalidValues -> {
-                        // plugin.componentLogger.warn("Invalid values: ${result.input}, expected: ${result.correctValues}")
-                    }
+                    else -> null
                 }
             }
+
+            if (sidebarComponent.isEmpty()) {
+                plugin.componentLogger.warn("No valid sidebar component found for line $line")
+                continue
+            }
+
+            if (sidebarComponent.size > 1) {
+                plugin.componentLogger.warn("Multiple sidebar components found for line $line")
+            }
+
+            sidebarComponentBuilder.addComponent(sidebarComponent.first())
         }
         val titleSidebarComponent = SidebarComponent.builder()
             .addStaticLine(Component.text("Mewcraft"))
@@ -95,7 +100,7 @@ class ScoreboardManager : KoinComponent {
 
 private data class ScoreboardData(
     val layout: ComponentSidebarLayout,
-    val sidebar: Sidebar
+    val sidebar: Sidebar,
 ) {
     fun refresh() {
         layout.apply(sidebar)
