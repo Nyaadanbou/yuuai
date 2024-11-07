@@ -18,7 +18,7 @@ import org.spongepowered.configurate.ConfigurationNode
 
 interface StandalonePart : ScoreboardPart {
     companion object : ScoreboardPartFactory<StandalonePart> {
-        val NAMESPACE = "standalone"
+        const val NAMESPACE = "standalone"
         val VALUES = arrayOf("server_name", "world_name")
 
         override fun check(node: ConfigurationNode): ScoreboardPartCheckResult {

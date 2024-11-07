@@ -19,7 +19,7 @@ import org.spongepowered.configurate.ConfigurationNode
 
 interface EconomyPart : ScoreboardPart {
     companion object : ScoreboardPartFactory<EconomyPart>, KoinComponent {
-        val NAMESPACE = "economy"
+        const val NAMESPACE = "economy"
 
         private val plugin: YuuaiPlugin by inject()
 

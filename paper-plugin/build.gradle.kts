@@ -20,6 +20,7 @@ dependencies {
 
     compileOnly(local.helper)
     compileOnly(local.economy.api)
+    compileOnly(local.adventurelevel)
 
     /* internal */
 
@@ -57,9 +58,13 @@ paper {
     author = "g2213swo"
     load = BukkitPluginDescription.PluginLoadOrder.POSTWORLD
     serverDependencies {
+        register("AdventureLevel") {
+            required = false
+            load = RelativeLoadOrder.OMIT // 懒加载 class
+        }
         register("Economy") {
             required = false
-            load = RelativeLoadOrder.BEFORE
+            load = RelativeLoadOrder.OMIT // 懒加载 class
         }
     }
 }
