@@ -19,10 +19,13 @@ dependencies {
     /* external */
 
     compileOnly(local.helper)
-    compileOnly(local.economy.api)
     compileOnly(local.adventurelevel)
+    compileOnly(local.economy.api)
+    compileOnly(local.orientation)
 
     /* internal */
+
+    implementation(project(":common"))
 
     // configurate
     implementation(platform(libs.bom.configurate.yaml))
@@ -63,6 +66,10 @@ paper {
             load = RelativeLoadOrder.OMIT // 懒加载 class
         }
         register("Economy") {
+            required = false
+            load = RelativeLoadOrder.OMIT // 懒加载 class
+        }
+        register("Orientation") {
             required = false
             load = RelativeLoadOrder.OMIT // 懒加载 class
         }

@@ -1,5 +1,6 @@
 package cc.mewcraft.yuuai.scoreboard
 
+import cc.mewcraft.yuuai.CheckResult
 import cc.mewcraft.yuuai.scoreboard.impl.ScoreboardParts
 import cc.mewcraft.yuuai.util.reloadable
 import org.slf4j.Logger
@@ -23,8 +24,8 @@ class ScoreboardConfig(
             }
 
             when (val checkResult = partFactory.check(node)) {
-                is ScoreboardPartCheckResult.Success -> Unit
-                is ScoreboardPartCheckResult.MissingDependency -> {
+                is CheckResult.Success -> Unit
+                is CheckResult.MissingDependency -> {
                     logger.warn("Missing dependency for scoreboard part: $key, dependencies: ${checkResult.missingDependencies}")
                     continue
                 }

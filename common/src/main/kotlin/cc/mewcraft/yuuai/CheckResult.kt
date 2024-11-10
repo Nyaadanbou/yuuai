@@ -1,9 +1,9 @@
-package cc.mewcraft.yuuai.scoreboard
+package cc.mewcraft.yuuai
 
-sealed interface ScoreboardPartCheckResult {
-    data object Success : ScoreboardPartCheckResult
+sealed interface CheckResult {
+    data object Success : CheckResult
 
-    class MissingDependency(vararg val missingDependencies: String) : ScoreboardPartCheckResult {
+    class MissingDependency(vararg val missingDependencies: String) : CheckResult {
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
             if (javaClass != other?.javaClass) return false

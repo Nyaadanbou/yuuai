@@ -1,5 +1,6 @@
 package cc.mewcraft.yuuai.scoreboard
 
+import cc.mewcraft.yuuai.CheckResult
 import org.spongepowered.configurate.ConfigurationNode
 
 interface ScoreboardPartFactory<P : ScoreboardPart> {
@@ -8,7 +9,7 @@ interface ScoreboardPartFactory<P : ScoreboardPart> {
      *
      * 如检查工厂依赖的插件是否已经启用等.
      */
-    fun check(node: ConfigurationNode): ScoreboardPartCheckResult
+    fun check(node: ConfigurationNode): CheckResult
 
     /**
      * 从配置文件中创建一个计分板部分.

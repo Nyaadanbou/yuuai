@@ -4,7 +4,7 @@ import cc.mewcraft.adventurelevel.level.category.LevelCategory
 import cc.mewcraft.adventurelevel.plugin.AdventureLevelProvider
 import cc.mewcraft.yuuai.YuuaiPlugin
 import cc.mewcraft.yuuai.scoreboard.ScoreboardPart
-import cc.mewcraft.yuuai.scoreboard.ScoreboardPartCheckResult
+import cc.mewcraft.yuuai.CheckResult
 import cc.mewcraft.yuuai.scoreboard.ScoreboardPartFactory
 import cc.mewcraft.yuuai.scoreboard.SidebarComponentResult
 import cc.mewcraft.yuuai.scoreboard.impl.AdventureLevelPart.Companion.NAMESPACE
@@ -26,10 +26,10 @@ interface AdventureLevelPart : ScoreboardPart {
 
         private val plugin: YuuaiPlugin by inject()
 
-        override fun check(node: ConfigurationNode): ScoreboardPartCheckResult {
+        override fun check(node: ConfigurationNode): CheckResult {
             plugin.server.pluginManager.getPlugin("AdventureLevel")
-                ?: return ScoreboardPartCheckResult.MissingDependency("AdventureLevel")
-            return ScoreboardPartCheckResult.Success
+                ?: return CheckResult.MissingDependency("AdventureLevel")
+            return CheckResult.Success
         }
 
         override fun create(node: ConfigurationNode): AdventureLevelPart {
@@ -48,7 +48,9 @@ private class AdventureLevelPartImpl(
     val adventureLevel = AdventureLevelProvider.get()
 
     private val levelFormatPlaceHolder: (Player) -> TagResolver = {
-        val level = adventureLevel.playerDataManager().load(it).getLevel(LevelCategory.PRIMARY)
+        val dataManager = adventureLevel.playerDataManager()
+        val data = dataManager.load(it)
+        val level = data.getLevel(LevelCategory.PRIMARY)
         Placeholder.parsed("value", level.level.toString())
     }
 

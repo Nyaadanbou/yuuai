@@ -1,5 +1,7 @@
 package cc.mewcraft.yuuai
 
+import cc.mewcraft.yuuai.bossbar.BossBarListener
+import cc.mewcraft.yuuai.bossbar.bossBarModule
 import cc.mewcraft.yuuai.command.CommandManager
 import cc.mewcraft.yuuai.command.commandModule
 import cc.mewcraft.yuuai.event.ScoreboardListener
@@ -28,6 +30,7 @@ class YuuaiPlugin : KExtendedJavaPlugin() {
             modules(
                 yuuaiModule(this@YuuaiPlugin),
 
+                bossBarModule(),
                 commandModule(),
                 scoreboardModule(),
                 textModule()
@@ -45,6 +48,7 @@ class YuuaiPlugin : KExtendedJavaPlugin() {
 
         /* Register listeners */
 
+        Injector.get<BossBarListener>().register()
         Injector.get<ScoreboardListener>().register()
     }
 

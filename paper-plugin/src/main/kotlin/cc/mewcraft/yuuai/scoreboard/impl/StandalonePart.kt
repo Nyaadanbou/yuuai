@@ -1,7 +1,7 @@
 package cc.mewcraft.yuuai.scoreboard.impl
 
 import cc.mewcraft.yuuai.scoreboard.ScoreboardPart
-import cc.mewcraft.yuuai.scoreboard.ScoreboardPartCheckResult
+import cc.mewcraft.yuuai.CheckResult
 import cc.mewcraft.yuuai.scoreboard.ScoreboardPartFactory
 import cc.mewcraft.yuuai.scoreboard.SidebarComponentResult
 import cc.mewcraft.yuuai.scoreboard.impl.StandalonePart.Companion.NAMESPACE
@@ -21,8 +21,8 @@ interface StandalonePart : ScoreboardPart {
         const val NAMESPACE = "standalone"
         val VALUES = arrayOf("server_name", "world_name")
 
-        override fun check(node: ConfigurationNode): ScoreboardPartCheckResult {
-            return ScoreboardPartCheckResult.Success
+        override fun check(node: ConfigurationNode): CheckResult {
+            return CheckResult.Success
         }
 
         override fun create(node: ConfigurationNode): StandalonePart {

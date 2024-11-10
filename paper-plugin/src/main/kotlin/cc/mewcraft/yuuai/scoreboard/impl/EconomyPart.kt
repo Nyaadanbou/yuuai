@@ -3,12 +3,11 @@ package cc.mewcraft.yuuai.scoreboard.impl
 import cc.mewcraft.economy.api.EconomyProvider
 import cc.mewcraft.yuuai.YuuaiPlugin
 import cc.mewcraft.yuuai.scoreboard.ScoreboardPart
-import cc.mewcraft.yuuai.scoreboard.ScoreboardPartCheckResult
+import cc.mewcraft.yuuai.CheckResult
 import cc.mewcraft.yuuai.scoreboard.ScoreboardPartFactory
 import cc.mewcraft.yuuai.scoreboard.SidebarComponentResult
 import cc.mewcraft.yuuai.scoreboard.impl.EconomyPart.Companion.NAMESPACE
 import net.kyori.adventure.key.Key
-import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.minimessage.MiniMessage
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder
 import net.megavex.scoreboardlibrary.api.sidebar.component.SidebarComponent
@@ -23,10 +22,10 @@ interface EconomyPart : ScoreboardPart {
 
         private val plugin: YuuaiPlugin by inject()
 
-        override fun check(node: ConfigurationNode): ScoreboardPartCheckResult {
+        override fun check(node: ConfigurationNode): CheckResult {
             plugin.server.pluginManager.getPlugin("Economy")
-                ?: return ScoreboardPartCheckResult.MissingDependency("Economy")
-            return ScoreboardPartCheckResult.Success
+                ?: return CheckResult.MissingDependency("Economy")
+            return CheckResult.Success
         }
 
         override fun create(node: ConfigurationNode): EconomyPart {

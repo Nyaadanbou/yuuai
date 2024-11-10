@@ -1,4 +1,5 @@
 orientation:
+  enabled: true
   color: "green"
-  style: "solid"
+  overlay: "solid"
   text: "新人保护: <value>"
