@@ -1,11 +1,11 @@
 package cc.mewcraft.yuuai
 
-import cc.mewcraft.yuuai.bossbar.BossBarListener
 import cc.mewcraft.yuuai.bossbar.bossBarModule
 import cc.mewcraft.yuuai.command.CommandManager
 import cc.mewcraft.yuuai.command.commandModule
-import cc.mewcraft.yuuai.event.ScoreboardListener
 import cc.mewcraft.yuuai.event.YuuaiReloadEvent
+import cc.mewcraft.yuuai.listener.ControlListener
+import cc.mewcraft.yuuai.listener.listenerModule
 import cc.mewcraft.yuuai.scoreboard.SCOREBOARD_PATH
 import cc.mewcraft.yuuai.scoreboard.ScoreboardManager
 import cc.mewcraft.yuuai.scoreboard.scoreboardModule
@@ -32,6 +32,7 @@ class YuuaiPlugin : KExtendedJavaPlugin() {
 
                 bossBarModule(),
                 commandModule(),
+                listenerModule(),
                 scoreboardModule(),
                 textModule()
             )
@@ -48,8 +49,7 @@ class YuuaiPlugin : KExtendedJavaPlugin() {
 
         /* Register listeners */
 
-        Injector.get<BossBarListener>().register()
-        Injector.get<ScoreboardListener>().register()
+        Injector.get<ControlListener>().register()
     }
 
     override suspend fun disable() {

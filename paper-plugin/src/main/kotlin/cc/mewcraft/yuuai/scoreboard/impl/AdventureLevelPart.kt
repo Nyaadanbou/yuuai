@@ -45,9 +45,8 @@ private class AdventureLevelPartImpl(
 ) : AdventureLevelPart, KoinComponent {
     private val miniMessage: MiniMessage by inject()
 
-    val adventureLevel = AdventureLevelProvider.get()
-
     private val levelFormatPlaceHolder: (Player) -> TagResolver = {
+        val adventureLevel = AdventureLevelProvider.get()
         val dataManager = adventureLevel.playerDataManager()
         val data = dataManager.load(it)
         val level = data.getLevel(LevelCategory.PRIMARY)

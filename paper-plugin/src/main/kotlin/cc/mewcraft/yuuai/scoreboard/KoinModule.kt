@@ -1,7 +1,7 @@
 package cc.mewcraft.yuuai.scoreboard
 
 import cc.mewcraft.yuuai.PLUGIN_DATA_DIR
-import cc.mewcraft.yuuai.event.ScoreboardListener
+import cc.mewcraft.yuuai.event.ScoreboardHandler
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.qualifier.named
@@ -10,7 +10,6 @@ import org.spongepowered.configurate.yaml.NodeStyle
 import org.spongepowered.configurate.yaml.YamlConfigurationLoader
 import java.nio.file.Path
 
-const val BOSS_BAR_PATH = "bossbar.yml"
 const val SCOREBOARD_PATH = "sidebar.yml"
 
 internal fun scoreboardModule(): Module = module {
@@ -24,5 +23,5 @@ internal fun scoreboardModule(): Module = module {
         ScoreboardConfig(loader, get())
     }
 
-    singleOf(::ScoreboardListener)
+    singleOf(::ScoreboardHandler)
 }
