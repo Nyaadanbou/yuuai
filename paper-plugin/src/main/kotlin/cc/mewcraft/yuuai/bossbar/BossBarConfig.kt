@@ -30,7 +30,10 @@ class BossBarConfig(
 
             runCatching { bossBarFactory.getBossBarFactory(node) }
                 .onFailure { logger.warn("Failed to get bossbar factory: $key", it) }
-                .onSuccess { bossBars.add(it) }
+                .onSuccess {
+                    if (it.isEnable)
+                        bossBars.add(it)
+                }
         }
         bossBars
     }

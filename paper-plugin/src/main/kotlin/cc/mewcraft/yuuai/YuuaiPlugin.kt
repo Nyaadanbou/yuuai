@@ -1,5 +1,7 @@
 package cc.mewcraft.yuuai
 
+import cc.mewcraft.yuuai.bossbar.BOSS_BAR_PATH
+import cc.mewcraft.yuuai.bossbar.BossBarManager
 import cc.mewcraft.yuuai.bossbar.bossBarModule
 import cc.mewcraft.yuuai.command.CommandManager
 import cc.mewcraft.yuuai.command.commandModule
@@ -61,7 +63,8 @@ class YuuaiPlugin : KExtendedJavaPlugin() {
         Schedulers.sync().run {
             saveDefaultConfig()
             reloadConfig()
-            saveResourceRecursively(SCOREBOARD_PATH)
+            saveResource(BOSS_BAR_PATH)
+            saveResource(SCOREBOARD_PATH)
             Injector.get<ScoreboardManager>().reload()
 
             YuuaiReloadEvent().callEvent()
