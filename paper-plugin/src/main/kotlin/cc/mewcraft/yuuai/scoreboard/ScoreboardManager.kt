@@ -1,108 +1,68 @@
 package cc.mewcraft.yuuai.scoreboard
 
+import cc.mewcraft.yuuai.Injector
 import cc.mewcraft.yuuai.YuuaiPlugin
+import cc.mewcraft.yuuai.component.ScoreboardComponent
+import it.unimi.dsi.fastutil.objects.Object2ObjectFunction
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
 import net.megavex.scoreboardlibrary.api.ScoreboardLibrary
-import net.megavex.scoreboardlibrary.api.exception.NoPacketAdapterAvailableException
-import net.megavex.scoreboardlibrary.api.noop.NoopScoreboardLibrary
-import net.megavex.scoreboardlibrary.api.sidebar.Sidebar
-import net.megavex.scoreboardlibrary.api.sidebar.component.ComponentSidebarLayout
-import net.megavex.scoreboardlibrary.api.sidebar.component.SidebarComponent
 import org.bukkit.entity.Player
 import org.koin.core.component.KoinComponent
+import org.koin.core.component.get
 import org.koin.core.component.inject
 import java.util.*
-import kotlin.collections.forEach
 import kotlin.collections.set
 
 class ScoreboardManager : KoinComponent {
     private val plugin: YuuaiPlugin by inject()
     private val config: ScoreboardConfig by inject()
 
-    private val scoreboardLibrary: ScoreboardLibrary
+    private val scoreboards: Object2ObjectOpenHashMap<UUID, Scoreboard> = Object2ObjectOpenHashMap()
 
-    private val sidebars: Object2ObjectOpenHashMap<UUID, ScoreboardData> = Object2ObjectOpenHashMap()
-
-    init {
-        scoreboardLibrary = try {
-            ScoreboardLibrary.loadScoreboardLibrary(plugin)
-        } catch (e: NoPacketAdapterAvailableException) {
-            // If no packet adapter was found, you can fallback to the no-op implementation:
-            plugin.componentLogger.warn("No scoreboard packet adapter available!")
-            NoopScoreboardLibrary()
-        }
-    }
-
-    fun createScoreboard(player: Player) {
+    fun showScoreboard(player: Player) {
         val layout = config.layout
-        val scoreboardParts = config.scoreboardParts
+        val scoreboardComponents = config.scoreboardComponents
 
-        val sidebarComponentBuilder = SidebarComponent.builder()
+        val lines = mutableMapOf<Key, ScoreboardComponentData>()
 
-        for (line in layout) {
+        for ((index, line) in layout.withIndex()) {
             val lineKey = Key.key(line)
-            val sidebarComponent = scoreboardParts.mapNotNull { part ->
-                when (val result = part.sidebarComponent(lineKey, player)) {
-                    is SidebarComponentResult.Success -> {
-                        result.value
-                    }
+            val scoreboardComponent = scoreboardComponents.find { it.namespace == lineKey.namespace() }
 
-                    else -> null
-                }
-            }
-
-            if (sidebarComponent.isEmpty()) {
-                plugin.componentLogger.warn("No valid sidebar component found for line $line")
+            if (scoreboardComponent == null) {
+                plugin.componentLogger.warn("No scoreboard component found for $lineKey")
                 continue
             }
 
-            if (sidebarComponent.size > 1) {
-                plugin.componentLogger.warn("Multiple sidebar components found for line $line")
-            }
-
-            sidebarComponentBuilder.addComponent(sidebarComponent.first())
+            lines[lineKey] = ScoreboardComponentData(index, scoreboardComponent)
         }
-        val titleSidebarComponent = SidebarComponent.builder()
-            .addStaticLine(Component.text("Mewcraft"))
-            .build()
 
-        val sidebarLayouts = ComponentSidebarLayout(titleSidebarComponent, sidebarComponentBuilder.build())
-        val sidebar = scoreboardLibrary.createSidebar(15, player.locale())
+        val scoreboard = scoreboards.computeIfAbsent(player.uniqueId, Object2ObjectFunction { _ -> Scoreboard(player, lines) })
 
-        sidebarLayouts.apply(sidebar)
-        sidebar.addPlayer(player)
-        sidebars[player.uniqueId] = ScoreboardData(sidebarLayouts, sidebar)
+        scoreboard.title(Component.text("Mewcraft"))
+        scoreboard.show()
     }
 
     fun removeScoreboard(player: Player) {
-        sidebars[player.uniqueId]?.sidebar?.removePlayer(player)
-        sidebars.remove(player.uniqueId)
+        scoreboards[player.uniqueId]?.hide()
+        scoreboards.remove(player.uniqueId)
     }
 
-    fun refreshScoreboard(player: Player) {
-        val data = sidebars[player.uniqueId]
-            ?: return
-        data.refresh()
+    fun setLine(player: Player, scoreboardComponent: ScoreboardComponent) {
+        scoreboards[player.uniqueId]?.line(scoreboardComponent)
     }
 
     fun reload() {
-        sidebars.values.forEach { it.sidebar.close() }
-        sidebars.clear()
-        plugin.server.onlinePlayers.forEach { createScoreboard(it) }
+        scoreboards.values.forEach { it.hide() }
+        scoreboards.clear()
+        plugin.server.onlinePlayers.forEach { showScoreboard(it) }
     }
 
     fun close() {
-        scoreboardLibrary.close()
-    }
-}
-
-private data class ScoreboardData(
-    val layout: ComponentSidebarLayout,
-    val sidebar: Sidebar,
-) {
-    fun refresh() {
-        layout.apply(sidebar)
+        scoreboards.values.forEach { it.hide() }
+        scoreboards.clear()
+        Injector.get<ScoreboardLibrary>().close()
     }
 }

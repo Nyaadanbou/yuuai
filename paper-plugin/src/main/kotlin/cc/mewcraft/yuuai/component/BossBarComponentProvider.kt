@@ -1,9 +1,9 @@
-package cc.mewcraft.yuuai.bossbar
+package cc.mewcraft.yuuai.component
 
 import cc.mewcraft.yuuai.CheckResult
 import org.spongepowered.configurate.ConfigurationNode
 
-interface BossBarFactoryProvider<B : BossBarFactory> {
+interface BossBarComponentProvider<B : BossBarComponent> : YuuaiComponentProvider<B> {
     /**
      * 检查现有环境是否符合这个工厂 Provider 的要求.
      *

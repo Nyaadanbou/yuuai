@@ -3,7 +3,6 @@ package cc.mewcraft.yuuai.listener
 import cc.mewcraft.adventurelevel.event.AdventureLevelDataLoadEvent
 import cc.mewcraft.yuuai.bossbar.BossBarHandler
 import cc.mewcraft.yuuai.event.ScoreboardHandler
-import com.destroystokyo.paper.event.server.ServerTickStartEvent
 import org.bukkit.event.EventHandler
 import org.bukkit.event.player.PlayerQuitEvent
 
@@ -23,12 +22,5 @@ class AdventureLevelControlListener(
         val player = event.player
         bossBarHandler.playerQuit(player)
         scoreboardHandler.playerQuit(player)
-    }
-
-    @EventHandler
-    private fun onServerTick(event: ServerTickStartEvent) {
-        val tickNumber = event.tickNumber
-        bossBarHandler.serverTick(tickNumber)
-        scoreboardHandler.serverTick(tickNumber)
     }
 }

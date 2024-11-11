@@ -1,25 +1,25 @@
 package cc.mewcraft.yuuai.scoreboard
 
-import net.megavex.scoreboardlibrary.api.sidebar.component.SidebarComponent
+import net.kyori.adventure.text.Component
 
 /**
- * 代表 [SidebarComponent] 的结果。
+ * 代表 [Component] 的结果。
  */
-sealed interface SidebarComponentResult {
+sealed interface ScoreboardTextResult {
     /**
      * 代表成功的结果。
      */
-    data class Success(val value: SidebarComponent) : SidebarComponentResult
+    data class Success(val value: Component) : ScoreboardTextResult
 
     /**
      * 代表无效的命名空间。
      */
-    data class InvalidNamespace(val input: String, val correctNamespace: String) : SidebarComponentResult
+    data class InvalidNamespace(val input: String, val correctNamespace: String) : ScoreboardTextResult
 
     /**
      * 代表无效的值。
      */
-    class InvalidValues(val input: String, vararg val correctValues: String) : SidebarComponentResult {
+    class InvalidValues(val input: String, vararg val correctValues: String) : ScoreboardTextResult {
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
             if (javaClass != other?.javaClass) return false

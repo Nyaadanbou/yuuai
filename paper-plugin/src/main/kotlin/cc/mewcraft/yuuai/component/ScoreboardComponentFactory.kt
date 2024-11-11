@@ -1,9 +1,9 @@
-package cc.mewcraft.yuuai.scoreboard
+package cc.mewcraft.yuuai.component
 
 import cc.mewcraft.yuuai.CheckResult
 import org.spongepowered.configurate.ConfigurationNode
 
-interface ScoreboardPartFactory<P : ScoreboardPart> {
+interface ScoreboardComponentFactory<S : ScoreboardComponent> : YuuaiComponentProvider<S> {
     /**
      * 检查现有环境是否符合这个工厂的要求.
      *
@@ -14,5 +14,5 @@ interface ScoreboardPartFactory<P : ScoreboardPart> {
     /**
      * 从配置文件中创建一个计分板部分.
      */
-    fun create(node: ConfigurationNode): P
+    fun create(node: ConfigurationNode): S
 }

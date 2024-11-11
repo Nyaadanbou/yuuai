@@ -1,7 +1,6 @@
 package cc.mewcraft.yuuai
 
 import cc.mewcraft.yuuai.bossbar.BOSS_BAR_PATH
-import cc.mewcraft.yuuai.bossbar.BossBarManager
 import cc.mewcraft.yuuai.bossbar.bossBarModule
 import cc.mewcraft.yuuai.command.CommandManager
 import cc.mewcraft.yuuai.command.commandModule
