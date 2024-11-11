@@ -33,7 +33,7 @@ class ScoreboardConfig(
                     continue
                 }
                 is CheckResult.MissingDependency -> {
-                    logger.warn("Missing dependency for scoreboard part: $key, dependencies: ${checkResult.missingDependencies}")
+                    logger.warn("Missing dependency for scoreboard part: $key, dependencies: ${checkResult.missingDependencies.joinToString()}")
                     continue
                 }
             }

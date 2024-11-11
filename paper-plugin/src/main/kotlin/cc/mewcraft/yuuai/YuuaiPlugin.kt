@@ -64,9 +64,9 @@ class YuuaiPlugin : KExtendedJavaPlugin() {
             reloadConfig()
             saveResource(BOSS_BAR_PATH)
             saveResource(SCOREBOARD_PATH)
-            Injector.get<ScoreboardManager>().reload()
 
             YuuaiReloadEvent().callEvent()
+            Injector.get<ScoreboardManager>().reload()
         }
     }
 }
