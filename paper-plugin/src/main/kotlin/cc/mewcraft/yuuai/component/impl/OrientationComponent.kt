@@ -4,7 +4,7 @@ import cc.mewcraft.orientation.OrientationProvider
 import cc.mewcraft.orientation.novice.NoviceRefreshListener
 import cc.mewcraft.yuuai.CheckResult
 import cc.mewcraft.yuuai.component.BossBarComponent
-import cc.mewcraft.yuuai.component.BossBarComponentProvider
+import cc.mewcraft.yuuai.component.BossBarComponentFactory
 import cc.mewcraft.yuuai.component.YuuaiRefresher
 import com.google.common.cache.CacheBuilder
 import com.google.common.cache.CacheLoader
@@ -18,7 +18,7 @@ import org.koin.core.component.inject
 import org.spongepowered.configurate.ConfigurationNode
 
 interface OrientationComponent : BossBarComponent {
-    companion object : AbstractYuuaiComponentProvider<OrientationComponent>(), BossBarComponentProvider<OrientationComponent> {
+    companion object : AbstractYuuaiComponentFactory<OrientationComponent>(), BossBarComponentFactory<OrientationComponent> {
         const val NAMESPACE = "orientation"
 
         override fun check(node: ConfigurationNode): CheckResult {
@@ -32,7 +32,7 @@ interface OrientationComponent : BossBarComponent {
             return CheckResult.Success
         }
 
-        override fun getBossBarFactory(node: ConfigurationNode): OrientationComponent {
+        override fun getComponent(node: ConfigurationNode): OrientationComponent {
             return OrientationComponentImpl(
                 color = BossBar.Color.valueOf(node.node("color").getString("WHITE").uppercase()),
                 overlay = BossBar.Overlay.valueOf(node.node("overlay").getString("PROGRESS").uppercase()),
@@ -98,5 +98,11 @@ private class OrientationComponentImpl(
         )
         novice.addRefreshListener(listener)
         novice.refresh()
+    }
+
+    override fun hideBossBar(player: Player) {
+        val bossBar = bossBars[player]
+        player.hideBossBar(bossBar)
+        bossBars.invalidate(player)
     }
 }

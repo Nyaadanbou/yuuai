@@ -4,11 +4,11 @@ import cc.mewcraft.yuuai.CheckResult
 import cc.mewcraft.yuuai.Injector
 import cc.mewcraft.yuuai.YuuaiPlugin
 import cc.mewcraft.yuuai.component.YuuaiComponent
-import cc.mewcraft.yuuai.component.YuuaiComponentProvider
+import cc.mewcraft.yuuai.component.YuuaiComponentFactory
 import org.koin.core.component.get
 import org.spongepowered.configurate.ConfigurationNode
 
-abstract class AbstractYuuaiComponentProvider<C : YuuaiComponent> : YuuaiComponentProvider<C> {
+abstract class AbstractYuuaiComponentFactory<C : YuuaiComponent> : YuuaiComponentFactory<C> {
     fun isEnabled(node: ConfigurationNode): Boolean {
         return node.node("enabled").getBoolean(false)
     }

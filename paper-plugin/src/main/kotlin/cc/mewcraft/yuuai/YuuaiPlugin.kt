@@ -1,6 +1,10 @@
 package cc.mewcraft.yuuai
 
+import cc.mewcraft.yuuai.actionbar.ACTIONBAR_PATH
+import cc.mewcraft.yuuai.actionbar.ActionbarManager
+import cc.mewcraft.yuuai.actionbar.actionbarModule
 import cc.mewcraft.yuuai.bossbar.BOSS_BAR_PATH
+import cc.mewcraft.yuuai.bossbar.BossBarManager
 import cc.mewcraft.yuuai.bossbar.bossBarModule
 import cc.mewcraft.yuuai.command.CommandManager
 import cc.mewcraft.yuuai.command.commandModule
@@ -31,6 +35,7 @@ class YuuaiPlugin : KExtendedJavaPlugin() {
             modules(
                 yuuaiModule(this@YuuaiPlugin),
 
+                actionbarModule(),
                 bossBarModule(),
                 commandModule(),
                 listenerModule(),
@@ -54,6 +59,7 @@ class YuuaiPlugin : KExtendedJavaPlugin() {
     }
 
     override suspend fun disable() {
+        Injector.get<ActionbarManager>().close()
         Injector.get<ScoreboardManager>().close()
         stopKoin()
     }
@@ -62,10 +68,13 @@ class YuuaiPlugin : KExtendedJavaPlugin() {
         Schedulers.sync().run {
             saveDefaultConfig()
             reloadConfig()
+            saveResource(ACTIONBAR_PATH)
             saveResource(BOSS_BAR_PATH)
             saveResource(SCOREBOARD_PATH)
 
             YuuaiReloadEvent().callEvent()
+            Injector.get<ActionbarManager>().reload()
+            Injector.get<BossBarManager>().reload()
             Injector.get<ScoreboardManager>().reload()
         }
     }

@@ -1,5 +1,6 @@
 package cc.mewcraft.yuuai.scoreboard
 
+import cc.mewcraft.yuuai.TextResult
 import cc.mewcraft.yuuai.component.ScoreboardComponent
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
@@ -56,13 +57,13 @@ class Scoreboard(
 
     private fun ScoreboardComponent.textComponent(lineKey: Key): Component {
         return when (val textResult = text(lineKey, player)) {
-            is ScoreboardTextResult.Success -> textResult.value
-            is ScoreboardTextResult.InvalidNamespace -> {
+            is TextResult.Success -> textResult.value
+            is TextResult.InvalidNamespace -> {
                 ScoreboardSupport.logger.error("Invalid namespace when getting text for scoreboard: ${lineKey.namespace()}, expected: ${textResult.correctNamespace}")
                 Component.text("Error").color(ScoreboardSupport.ERROR_COLOR)
             }
 
-            is ScoreboardTextResult.InvalidValues -> {
+            is TextResult.InvalidValues -> {
                 ScoreboardSupport.logger.warn("Invalid values when getting text for scoreboard: ${lineKey.namespace()}, expected: ${textResult.correctValues.joinToString()}")
                 Component.text("Error").color(ScoreboardSupport.ERROR_COLOR)
             }

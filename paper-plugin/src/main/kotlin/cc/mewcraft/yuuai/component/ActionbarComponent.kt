@@ -5,11 +5,11 @@ import net.kyori.adventure.key.Key
 import org.bukkit.entity.Player
 
 /**
- * 包含一个所有侧边栏组件可能的样子的接口.
+ * 表示玩家 ui 内的 ActionBar 组件.
  */
-interface ScoreboardComponent : YuuaiComponent {
+interface ActionbarComponent : YuuaiComponent {
     /**
-     * 根据输入的信息获取侧边栏组件.
+     * 根据输入的信息获取文字组件.
      *
      * @see TextResult
      *

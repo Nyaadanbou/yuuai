@@ -15,10 +15,10 @@ class BossBarConfig(
 ) {
     private val root by reloadable { loader.load() }
 
-    val bossBarFactories: List<BossBarComponent> by reloadable {
+    val bossBarComponents: List<BossBarComponent> by reloadable {
         val bossBars = mutableListOf<BossBarComponent>()
         for ((key, node) in root.childrenMap()) {
-            val bossBarFactory = BossBarComponents.getBossBarFactoryProvider(key.toString())
+            val bossBarFactory = BossBarComponents.getBossBarFactory(key.toString())
             if (bossBarFactory == null) {
                 logger.warn("Unknown bossbar factory key: $key")
                 continue
@@ -37,7 +37,7 @@ class BossBarConfig(
 
             }
 
-            runCatching { bossBarFactory.getBossBarFactory(node) }
+            runCatching { bossBarFactory.getComponent(node) }
                 .onFailure { logger.warn("Failed to get bossbar factory: $key", it) }
                 .onSuccess { bossBarComponent ->
                     bossBarComponent.refresher?.let { plugin.registerSuspendListener(it) }

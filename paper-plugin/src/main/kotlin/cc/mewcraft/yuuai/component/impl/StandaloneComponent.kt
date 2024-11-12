@@ -1,10 +1,8 @@
 package cc.mewcraft.yuuai.component.impl
 
-import cc.mewcraft.yuuai.component.ScoreboardComponent
 import cc.mewcraft.yuuai.CheckResult
-import cc.mewcraft.yuuai.component.ScoreboardComponentFactory
-import cc.mewcraft.yuuai.component.YuuaiRefresher
-import cc.mewcraft.yuuai.scoreboard.ScoreboardTextResult
+import cc.mewcraft.yuuai.component.*
+import cc.mewcraft.yuuai.TextResult
 import cc.mewcraft.yuuai.component.impl.StandaloneComponent.Companion.NAMESPACE
 import cc.mewcraft.yuuai.component.impl.StandaloneComponent.Companion.VALUES
 import cc.mewcraft.yuuai.scoreboard.ScoreboardManager
@@ -19,22 +17,21 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.spongepowered.configurate.ConfigurationNode
 
-interface StandaloneComponent : ScoreboardComponent {
-    companion object : AbstractYuuaiComponentProvider<StandaloneComponent>(), ScoreboardComponentFactory<StandaloneComponent> {
+interface StandaloneComponent : ScoreboardComponent, ActionbarComponent {
+    companion object : AbstractYuuaiComponentFactory<StandaloneComponent>(), ScoreboardComponentFactory<StandaloneComponent>, ActionbarComponentFactory<StandaloneComponent> {
         const val NAMESPACE = "standalone"
-        val VALUES = arrayOf("server_name", "world_name")
+        val VALUES = arrayOf("server_name", "world_name", "player_health")
 
         override fun check(node: ConfigurationNode): CheckResult {
             return CheckResult.Success
         }
 
-        override fun create(node: ConfigurationNode): StandaloneComponent {
-            val serverName = node.node("server_name").string
-                ?: throw IllegalArgumentException("Missing 'server_name' key in standalone scoreboard part")
-            val worldName = node.node("world_name").string
-                ?: throw IllegalArgumentException("Missing 'world_name' key in standalone scoreboard part")
+        override fun getComponent(node: ConfigurationNode): StandaloneComponent {
+            val serverName = node.node("server_name").string ?: "<value>"
+            val worldName = node.node("world_name").string ?: "<value>"
+            val playerHealth = node.node("player_health").string ?: "<value>"
 
-            return StandaloneComponentImpl(serverName, worldName)
+            return StandaloneComponentImpl(serverName, worldName, playerHealth)
         }
     }
 }
@@ -42,12 +39,14 @@ interface StandaloneComponent : ScoreboardComponent {
 private class StandaloneComponentImpl(
     private val serverNameFormat: String,
     private val worldNameFormat: String,
+    private val playerHealthFormat: String,
 ) : StandaloneComponent, KoinComponent {
     private val scoreboardManager: ScoreboardManager by inject()
     private val miniMessage: MiniMessage by inject()
 
     private val serverNamePlaceHolder: (Player) -> TagResolver = { Placeholder.parsed("value", it.server.name) }
     private val worldNamePlaceholder: (Player) -> TagResolver = { Placeholder.parsed("value", it.world.name) }
+    private val playerHealthPlaceholder: (Player) -> TagResolver = { Placeholder.parsed("value", it.health.toString()) }
 
     override val namespace: String = NAMESPACE
     override val refresher: YuuaiRefresher = Refresher()
@@ -63,21 +62,27 @@ private class StandaloneComponentImpl(
         }
     }
 
-    override fun text(key: Key, player: Player): ScoreboardTextResult {
+    override fun text(key: Key, player: Player): TextResult {
         if (key.namespace() != NAMESPACE)
-            return ScoreboardTextResult.InvalidNamespace(key.namespace(), NAMESPACE)
+            return TextResult.InvalidNamespace(key.namespace(), NAMESPACE)
         if (key.value() !in VALUES)
-            return ScoreboardTextResult.InvalidValues(key.value(), *VALUES)
+            return TextResult.InvalidValues(key.value(), *VALUES)
         return when (key.value()) {
             "server_name" -> {
-                ScoreboardTextResult.Success(
+                TextResult.Success(
                     miniMessage.deserialize(serverNameFormat, serverNamePlaceHolder(player))
                 )
             }
 
             "world_name" -> {
-                ScoreboardTextResult.Success(
+                TextResult.Success(
                     miniMessage.deserialize(worldNameFormat, worldNamePlaceholder(player))
+                )
+            }
+
+            "player_health" -> {
+                TextResult.Success(
+                    miniMessage.deserialize(playerHealthFormat, playerHealthPlaceholder(player))
                 )
             }
 

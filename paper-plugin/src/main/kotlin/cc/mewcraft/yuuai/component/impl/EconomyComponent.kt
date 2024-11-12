@@ -10,18 +10,17 @@ import cc.mewcraft.yuuai.component.YuuaiRefresher
 import cc.mewcraft.yuuai.component.impl.EconomyComponent.Companion.NAMESPACE
 import cc.mewcraft.yuuai.component.impl.EconomyComponent.Companion.findCurrency
 import cc.mewcraft.yuuai.scoreboard.ScoreboardManager
-import cc.mewcraft.yuuai.scoreboard.ScoreboardTextResult
+import cc.mewcraft.yuuai.TextResult
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.minimessage.MiniMessage
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder
 import org.bukkit.entity.Player
-import org.bukkit.event.EventHandler
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.spongepowered.configurate.ConfigurationNode
 
 interface EconomyComponent : ScoreboardComponent {
-    companion object : AbstractYuuaiComponentProvider<EconomyComponent>(), ScoreboardComponentFactory<EconomyComponent> {
+    companion object : AbstractYuuaiComponentFactory<EconomyComponent>(), ScoreboardComponentFactory<EconomyComponent> {
         const val NAMESPACE = "economy"
 
         override fun check(node: ConfigurationNode): CheckResult {
@@ -35,7 +34,7 @@ interface EconomyComponent : ScoreboardComponent {
             return CheckResult.Success
         }
 
-        override fun create(node: ConfigurationNode): EconomyComponent {
+        override fun getComponent(node: ConfigurationNode): EconomyComponent {
             val formats = node.childrenMap()
                 .mapNotNull { (key, value) ->
                     val currencyString = key.toString()
@@ -64,23 +63,23 @@ private class EconomyComponentImpl(
         scoreboardManager.setLine(player, this)
     }
 
-    override fun text(key: Key, player: Player): ScoreboardTextResult {
+    override fun text(key: Key, player: Player): TextResult {
         if (key.namespace() != NAMESPACE)
-            return ScoreboardTextResult.InvalidNamespace(key.namespace(), NAMESPACE)
+            return TextResult.InvalidNamespace(key.namespace(), NAMESPACE)
         val economy = EconomyProvider.get()
 
         val currencyString = key.value()
         val currencyFormat = formats[currencyString]
         if (currencyFormat != null) {
             val currencies = economy.loadedCurrencies
-            val currency = findCurrency(currencyString) ?: return ScoreboardTextResult.InvalidValues(currencyString, *currencies.map { it.displayName }.toTypedArray())
+            val currency = findCurrency(currencyString) ?: return TextResult.InvalidValues(currencyString, *currencies.map { it.displayName }.toTypedArray())
             val balance = economy.getBalance(player.uniqueId, currency)
             val placeholder = Placeholder.parsed("value", balance.toString())
-            return ScoreboardTextResult.Success(
+            return TextResult.Success(
                 miniMessage.deserialize(currencyFormat, placeholder)
             )
         }
 
-        return ScoreboardTextResult.InvalidValues(currencyString, *formats.keys.toTypedArray())
+        return TextResult.InvalidValues(currencyString, *formats.keys.toTypedArray())
     }
 }

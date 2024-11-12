@@ -38,7 +38,7 @@ class ScoreboardConfig(
                 }
             }
 
-            runCatching { partFactory.create(node) }
+            runCatching { partFactory.getComponent(node) }
                 .onFailure { logger.warn("Failed to create scoreboard part: $key", it) }
                 .onSuccess { scoreboardComponent ->
                     scoreboardComponent.refresher?.let { plugin.registerSuspendListener(it) }

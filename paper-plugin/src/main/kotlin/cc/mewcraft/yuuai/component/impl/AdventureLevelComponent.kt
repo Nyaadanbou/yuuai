@@ -11,7 +11,7 @@ import cc.mewcraft.yuuai.component.YuuaiRefresher
 import cc.mewcraft.yuuai.component.impl.AdventureLevelComponent.Companion.NAMESPACE
 import cc.mewcraft.yuuai.component.impl.AdventureLevelComponent.Companion.VALUES
 import cc.mewcraft.yuuai.scoreboard.ScoreboardManager
-import cc.mewcraft.yuuai.scoreboard.ScoreboardTextResult
+import cc.mewcraft.yuuai.TextResult
 import com.google.common.cache.CacheBuilder
 import com.google.common.cache.CacheLoader
 import com.google.common.cache.LoadingCache
@@ -28,7 +28,7 @@ import org.koin.core.component.inject
 import org.spongepowered.configurate.ConfigurationNode
 
 interface AdventureLevelComponent : ScoreboardComponent {
-    companion object : AbstractYuuaiComponentProvider<AdventureLevelComponent>(), ScoreboardComponentFactory<AdventureLevelComponent> {
+    companion object : AbstractYuuaiComponentFactory<AdventureLevelComponent>(), ScoreboardComponentFactory<AdventureLevelComponent> {
         const val NAMESPACE = "adventure_level"
         val VALUES = arrayOf("level")
 
@@ -43,7 +43,7 @@ interface AdventureLevelComponent : ScoreboardComponent {
             return CheckResult.Success
         }
 
-        override fun create(node: ConfigurationNode): AdventureLevelComponent {
+        override fun getComponent(node: ConfigurationNode): AdventureLevelComponent {
             val levelFormat = node.node("level").string
                 ?: throw IllegalArgumentException("Missing 'level' key in AdventureLevelComponent configuration")
             return AdventureLevelComponentImpl(levelFormat)
@@ -66,15 +66,15 @@ private class AdventureLevelComponentImpl(
     override val refresher: YuuaiRefresher = Refresher()
     override val namespace: String = NAMESPACE
 
-    override fun text(key: Key, player: Player): ScoreboardTextResult {
+    override fun text(key: Key, player: Player): TextResult {
         if (key.namespace() != NAMESPACE)
-            return ScoreboardTextResult.InvalidNamespace(key.namespace(), NAMESPACE)
+            return TextResult.InvalidNamespace(key.namespace(), NAMESPACE)
         if (key.value() !in VALUES)
-            return ScoreboardTextResult.InvalidValues(key.value(), *VALUES)
+            return TextResult.InvalidValues(key.value(), *VALUES)
         return when (key.value()) {
-            "level" -> ScoreboardTextResult.Success(levelTextCached[player].component())
+            "level" -> TextResult.Success(levelTextCached[player].component())
 
-            else -> ScoreboardTextResult.InvalidValues(key.value(), *VALUES)
+            else -> TextResult.InvalidValues(key.value(), *VALUES)
         }
     }
 

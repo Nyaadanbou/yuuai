@@ -7,8 +7,8 @@ import org.koin.dsl.module
 fun listenerModule(): Module = module {
     single<ControlListener> {
         if (get<YuuaiPlugin>().isPluginPresent("AdventureLevel")) {
-            return@single AdventureLevelControlListener(get(), get())
+            return@single AdventureLevelControlListener(get(), get(), get())
         }
-        NormalControlListener(get(), get())
+        NormalControlListener(get(), get(), get())
     }
 }
