@@ -46,7 +46,7 @@ private class StandaloneComponentImpl(
 
     private val serverNamePlaceHolder: (Player) -> TagResolver = { Placeholder.parsed("value", it.server.name) }
     private val worldNamePlaceholder: (Player) -> TagResolver = { Placeholder.parsed("value", it.world.name) }
-    private val playerHealthPlaceholder: (Player) -> TagResolver = { Placeholder.parsed("value", it.health.toString()) }
+    private val playerHealthPlaceholder: (Player) -> TagResolver = { Placeholder.parsed("value", String.format("%.1f", it.health)) }
 
     override val namespace: String = NAMESPACE
     override val refresher: YuuaiRefresher = Refresher()
