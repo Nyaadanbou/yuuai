@@ -5,7 +5,7 @@ import org.bukkit.entity.Player
 
 class BossBarManager(
     private val config: BossBarConfig,
-    private val server: Server
+    private val server: Server,
 ) {
     fun showBossBar(player: Player) {
         val factories = config.bossBarComponents
@@ -15,12 +15,9 @@ class BossBarManager(
     }
 
     fun reload() {
-        val factories = config.bossBarComponents
-        for (factory in factories) {
-            server.onlinePlayers.forEach { player ->
-                factory.hideBossBar(player)
-                factory.showBossBar(player)
-            }
+        // 重载过后这里是新的 factory, 不需要调用卸载逻辑.
+        server.onlinePlayers.forEach { player ->
+            showBossBar(player)
         }
     }
 }

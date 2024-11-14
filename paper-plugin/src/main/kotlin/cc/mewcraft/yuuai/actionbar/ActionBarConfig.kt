@@ -42,7 +42,7 @@ class ActionBarConfig(
             runCatching { actionbarFactory.getComponent(node) }
                 .onFailure { logger.warn("Failed to get actionbar factory: $key", it) }
                 .onSuccess { bossBarComponent ->
-                    bossBarComponent.refresher?.let { plugin.registerSuspendListener(it) }
+                    bossBarComponent.load()
                     actionbars.add(bossBarComponent)
                 }
         }

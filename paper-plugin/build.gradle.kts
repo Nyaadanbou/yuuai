@@ -18,10 +18,11 @@ dependencies {
 
     /* external */
 
-    compileOnly(local.helper)
     compileOnly(local.adventurelevel)
     compileOnly(local.economy.api)
+    compileOnly(local.helper)
     compileOnly(local.orientation)
+    compileOnly(local.towny)
 
     /* internal */
 

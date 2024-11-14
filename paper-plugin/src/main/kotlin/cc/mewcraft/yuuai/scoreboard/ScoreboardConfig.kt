@@ -20,7 +20,7 @@ class ScoreboardConfig(
     val scoreboardComponents: List<ScoreboardComponent> by reloadable {
         val components = mutableListOf<ScoreboardComponent>()
         for ((key, node) in root.node("formats").childrenMap()) {
-            val partFactory = ScoreboardComponents.getPartFactory(key.toString())
+            val partFactory = ScoreboardComponents.getComponentFactory(key.toString())
             if (partFactory == null) {
                 logger.warn("Unknown scoreboard part: $key")
                 continue
@@ -41,7 +41,7 @@ class ScoreboardConfig(
             runCatching { partFactory.getComponent(node) }
                 .onFailure { logger.warn("Failed to create scoreboard part: $key", it) }
                 .onSuccess { scoreboardComponent ->
-                    scoreboardComponent.refresher?.let { plugin.registerSuspendListener(it) }
+                    scoreboardComponent.load()
                     components.add(scoreboardComponent)
                 }
         }

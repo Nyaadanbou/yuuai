@@ -40,7 +40,7 @@ class BossBarConfig(
             runCatching { bossBarFactory.getComponent(node) }
                 .onFailure { logger.warn("Failed to get bossbar factory: $key", it) }
                 .onSuccess { bossBarComponent ->
-                    bossBarComponent.refresher?.let { plugin.registerSuspendListener(it) }
+                    bossBarComponent.load()
                     bossBars.add(bossBarComponent)
                 }
         }

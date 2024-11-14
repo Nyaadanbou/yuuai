@@ -64,7 +64,7 @@ private class AdventureLevelComponentImpl(
             CacheLoader.from { player -> AdventureLevelTextData(player, levelFormat) }
         )
 
-    override val refresher: YuuaiRefresher = Refresher()
+    private val refresher: YuuaiRefresher = Refresher()
     override val namespace: String = NAMESPACE
 
     override fun text(key: Key, player: Player): TextResult {
@@ -87,6 +87,10 @@ private class AdventureLevelComponentImpl(
             levelTextCached.invalidate(player)
             scoreboardManager.setLine(player, this@AdventureLevelComponentImpl)
         }
+    }
+
+    override fun load() {
+        plugin.registerSuspendListener(refresher)
     }
 
     override fun unload() {

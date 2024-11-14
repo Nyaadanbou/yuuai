@@ -11,6 +11,7 @@ import cc.mewcraft.yuuai.component.impl.EconomyComponent.Companion.NAMESPACE
 import cc.mewcraft.yuuai.component.impl.EconomyComponent.Companion.findCurrency
 import cc.mewcraft.yuuai.scoreboard.ScoreboardManager
 import cc.mewcraft.yuuai.TextResult
+import cc.mewcraft.yuuai.YuuaiPlugin
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.minimessage.MiniMessage
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder
@@ -56,11 +57,12 @@ interface EconomyComponent : ScoreboardComponent {
 private class EconomyComponentImpl(
     private val formats: Map<String, String>,
 ) : EconomyComponent, KoinComponent {
+    private val plugin: YuuaiPlugin by inject()
     private val scoreboardManager: ScoreboardManager by inject()
     private val miniMessage: MiniMessage by inject()
 
     override val namespace: String = NAMESPACE
-    override val refresher: YuuaiRefresher = ServerTickRefresher(20) { player ->
+    private val refresher: YuuaiRefresher = ServerTickRefresher(20) { player ->
         scoreboardManager.setLine(player, this)
     }
 
@@ -82,6 +84,10 @@ private class EconomyComponentImpl(
         }
 
         return TextResult.InvalidValues(currencyString, *formats.keys.toTypedArray())
+    }
+
+    override fun load() {
+        plugin.registerSuspendListener(refresher)
     }
 
     override fun unload() {

@@ -10,9 +10,9 @@ interface YuuaiComponent {
     val namespace: String
 
     /**
-     * 组件的刷新器, 用于刷新组件的显示内容.
+     * 加载逻辑。
      */
-    val refresher: YuuaiRefresher?
+    fun load()
 
     /**
      * 卸载逻辑.

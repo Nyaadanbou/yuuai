@@ -3,9 +3,11 @@ package cc.mewcraft.yuuai.component.impl
 import cc.mewcraft.orientation.OrientationProvider
 import cc.mewcraft.orientation.novice.NoviceRefreshListener
 import cc.mewcraft.yuuai.CheckResult
+import cc.mewcraft.yuuai.YuuaiPlugin
 import cc.mewcraft.yuuai.component.BossBarComponent
 import cc.mewcraft.yuuai.component.BossBarComponentFactory
-import cc.mewcraft.yuuai.component.YuuaiRefresher
+import cc.mewcraft.yuuai.event.YuuaiReloadEvent
+import cc.mewcraft.yuuai.util.DurationFormatter
 import com.google.common.cache.CacheBuilder
 import com.google.common.cache.CacheLoader
 import com.google.common.cache.LoadingCache
@@ -13,17 +15,20 @@ import net.kyori.adventure.bossbar.BossBar
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.minimessage.MiniMessage
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder
-import org.bukkit.Server
 import org.bukkit.entity.Player
+import org.bukkit.event.EventHandler
 import org.bukkit.event.HandlerList
+import org.bukkit.event.Listener
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.spongepowered.configurate.ConfigurationNode
+import java.time.Duration
+import java.time.temporal.ChronoUnit
 
 interface OrientationComponent : BossBarComponent {
     companion object : AbstractYuuaiComponentFactory<OrientationComponent>(), BossBarComponentFactory<OrientationComponent> {
         const val NAMESPACE = "orientation"
-        val KEY = Key.key("yuuai", "orientation")
+        val LISTENER_KEY = Key.key("yuuai", "orientation")
 
         override fun check(node: ConfigurationNode): CheckResult {
             val checkResult = checkDependencies("Orientation")
@@ -51,10 +56,13 @@ private class OrientationComponentImpl(
     private val overlay: BossBar.Overlay,
     private val text: String,
 ) : OrientationComponent, KoinComponent {
+    private val plugin: YuuaiPlugin by inject()
     private val miniMessage: MiniMessage by inject()
 
     override val namespace: String = OrientationComponent.NAMESPACE
-    override val refresher: YuuaiRefresher? = null // 刷新逻辑由 Orientation 提供
+
+    private val reloadListener: Listener = ReloadListener()
+    private val timeFormatter: DurationFormatter = DurationFormatter(true, ChronoUnit.MINUTES)
 
     private val bossBars: LoadingCache<Player, BossBar> = CacheBuilder.newBuilder()
         .weakKeys()
@@ -89,7 +97,7 @@ private class OrientationComponentImpl(
                 } else if (!player.activeBossBars().contains(bossBar)) {
                     player.showBossBar(bossBar)
                 }
-                val title = miniMessage.deserialize(text, Placeholder.parsed("value", timeLeft.toString()))
+                val title = miniMessage.deserialize(text, Placeholder.parsed("value", timeFormatter.format(Duration.ofMillis(timeLeft))))
                 bossBar.name(title)
                 bossBar.progress(timeLeft.toFloat() / novice.maxTimeMillSeconds)
             },
@@ -100,18 +108,30 @@ private class OrientationComponentImpl(
                 bossBars.invalidate(player)
             },
         )
-        novice.addRefreshListener(OrientationComponent.KEY, refreshListener)
+        novice.addRefreshListener(OrientationComponent.LISTENER_KEY, refreshListener)
         novice.refresh()
     }
 
     override fun hideBossBar(player: Player) {
         val orientation = OrientationProvider.get()
         val novice = orientation.getNovice(player.uniqueId)
-        novice.removeRefreshListener(OrientationComponent.KEY)
+        novice.removeRefreshListener(OrientationComponent.LISTENER_KEY)
         bossBars.invalidate(player)
+    }
+
+    override fun load() {
+        plugin.registerSuspendListener(reloadListener)
     }
 
     override fun unload() {
         bossBars.asMap().forEach { hideBossBar(it.key) }
+        HandlerList.unregisterAll(reloadListener)
+    }
+
+    private inner class ReloadListener : Listener {
+        @EventHandler
+        private fun on(event: YuuaiReloadEvent) {
+            unload()
+        }
     }
 }
