@@ -1,7 +1,6 @@
 package cc.mewcraft.yuuai.scoreboard
 
 import cc.mewcraft.yuuai.CheckResult
-import cc.mewcraft.yuuai.YuuaiPlugin
 import cc.mewcraft.yuuai.component.ScoreboardComponent
 import cc.mewcraft.yuuai.component.ScoreboardComponents
 import cc.mewcraft.yuuai.util.reloadable
@@ -11,7 +10,6 @@ import org.spongepowered.configurate.loader.ConfigurationLoader
 
 class ScoreboardConfig(
     loader: ConfigurationLoader<*>,
-    private val plugin: YuuaiPlugin,
     private val logger: Logger,
 ) {
     private val root by reloadable { loader.load() }

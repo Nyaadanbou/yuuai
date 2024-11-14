@@ -25,7 +25,7 @@ internal fun scoreboardModule(): Module = module {
             .path(get<Path>(named(PLUGIN_DATA_DIR)).resolve(SCOREBOARD_PATH))
             .nodeStyle(NodeStyle.BLOCK)
             .build()
-        ScoreboardConfig(loader, get(), get())
+        ScoreboardConfig(loader, get())
     }
 
     single<ScoreboardLibrary> {
