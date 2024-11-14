@@ -10,6 +10,7 @@ import com.google.common.cache.CacheBuilder
 import com.google.common.cache.CacheLoader
 import com.google.common.cache.LoadingCache
 import net.kyori.adventure.bossbar.BossBar
+import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.minimessage.MiniMessage
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder
 import org.bukkit.Server
@@ -22,6 +23,7 @@ import org.spongepowered.configurate.ConfigurationNode
 interface OrientationComponent : BossBarComponent {
     companion object : AbstractYuuaiComponentFactory<OrientationComponent>(), BossBarComponentFactory<OrientationComponent> {
         const val NAMESPACE = "orientation"
+        val KEY = Key.key("yuuai", "orientation")
 
         override fun check(node: ConfigurationNode): CheckResult {
             val checkResult = checkDependencies("Orientation")
@@ -49,7 +51,6 @@ private class OrientationComponentImpl(
     private val overlay: BossBar.Overlay,
     private val text: String,
 ) : OrientationComponent, KoinComponent {
-    private val server: Server by inject()
     private val miniMessage: MiniMessage by inject()
 
     override val namespace: String = OrientationComponent.NAMESPACE
@@ -79,7 +80,7 @@ private class OrientationComponentImpl(
 
         val orientation = OrientationProvider.get()
         val novice = orientation.getNovice(player.uniqueId)
-        val listener = NoviceRefreshListener<Long>(
+        val refreshListener = NoviceRefreshListener<Long>(
             onRefresh = { timeLeft ->
                 val bossBar = bossBars[player]
                 if (timeLeft <= 0) {
@@ -99,17 +100,18 @@ private class OrientationComponentImpl(
                 bossBars.invalidate(player)
             },
         )
-        novice.addRefreshListener(listener)
+        novice.addRefreshListener(OrientationComponent.KEY, refreshListener)
         novice.refresh()
     }
 
     override fun hideBossBar(player: Player) {
-        val bossBar = bossBars[player]
-        player.hideBossBar(bossBar)
+        val orientation = OrientationProvider.get()
+        val novice = orientation.getNovice(player.uniqueId)
+        novice.removeRefreshListener(OrientationComponent.KEY)
         bossBars.invalidate(player)
     }
 
     override fun unload() {
-        server.onlinePlayers.forEach { hideBossBar(it) }
+        bossBars.asMap().forEach { hideBossBar(it.key) }
     }
 }
