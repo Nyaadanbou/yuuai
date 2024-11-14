@@ -77,5 +77,9 @@ paper {
             required = false
             load = RelativeLoadOrder.OMIT // 懒加载 class
         }
+        register("Towny") {
+            required = false
+            load = RelativeLoadOrder.OMIT // 懒加载 class
+        }
     }
 }
