@@ -48,6 +48,7 @@ adventurelevel = { group = "cc.mewcraft.adventurelevel", name = "api", version.r
 economy-api = { group = "cc.mewcraft.economy", name = "api", version = "2.2.0" }
 orientation = { group = "cc.mewcraft.orientation", name = "orientation-api", version = "1.0.0-SNAPSHOT" }
 towny = { group = "com.palmergames.bukkit.towny", name = "towny", version = "0.100.4.0" }
+network = { group = "cc.mewcraft.nettowaku", name = "api", version = "1.0.0" }
 
 scoreboardlibrary-api = { group = "net.megavex", name = "scoreboard-library-api", version.ref = "scoreboardlibrary" }
 scoreboardlibrary-implementation = { group = "net.megavex", name = "scoreboard-library-implementation", version.ref = "scoreboardlibrary" }

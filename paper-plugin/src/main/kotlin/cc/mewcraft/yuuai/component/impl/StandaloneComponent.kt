@@ -1,5 +1,6 @@
 package cc.mewcraft.yuuai.component.impl
 
+import cc.mewcraft.nettowaku.ServerInfo
 import cc.mewcraft.yuuai.CheckResult
 import cc.mewcraft.yuuai.component.*
 import cc.mewcraft.yuuai.TextResult
@@ -9,6 +10,7 @@ import cc.mewcraft.yuuai.component.impl.StandaloneComponent.Companion.VALUES
 import cc.mewcraft.yuuai.scoreboard.ScoreboardManager
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.minimessage.MiniMessage
+import net.kyori.adventure.text.minimessage.tag.resolver.Formatter
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver
 import org.bukkit.attribute.Attribute
@@ -44,18 +46,18 @@ private class StandaloneComponentImpl(
     private val serverNameFormat: String,
     private val worldNameFormat: String,
     private val playerHealthFormat: String,
-    private val playerMaxHealthFormat: String
+    private val playerMaxHealthFormat: String,
 ) : StandaloneComponent, KoinComponent {
     private val plugin: YuuaiPlugin by inject()
     private val scoreboardManager: ScoreboardManager by inject()
     private val miniMessage: MiniMessage by inject()
 
-    private val serverNamePlaceHolder: (Player) -> TagResolver = { Placeholder.parsed("value", it.server.name) }
+    private val serverNamePlaceHolder: () -> TagResolver = { Placeholder.parsed("value", ServerInfo.SERVER_NAME.get()) }
     private val worldNamePlaceholder: (Player) -> TagResolver = { Placeholder.parsed("value", it.world.name) }
-    private val playerHealthPlaceholder: (Player) -> TagResolver = { Placeholder.parsed("value", String.format("%.1f", it.health)) }
+    private val playerHealthPlaceholder: (Player) -> TagResolver = { Formatter.number("value", it.health) }
     private val playerMaxHealthPlaceholder: (Player) -> TagResolver = {
         val maxHealth = it.getAttribute(Attribute.GENERIC_MAX_HEALTH)?.value ?: 0
-        Placeholder.parsed("value", String.format(maxHealth.toString(), "%.1f"))
+        Formatter.number("value", maxHealth)
     }
     private val refresher: YuuaiRefresher = Refresher()
 
@@ -80,7 +82,7 @@ private class StandaloneComponentImpl(
         return when (key.value()) {
             "server_name" -> {
                 TextResult.Success(
-                    miniMessage.deserialize(serverNameFormat, serverNamePlaceHolder(player))
+                    miniMessage.deserialize(serverNameFormat, serverNamePlaceHolder())
                 )
             }
 

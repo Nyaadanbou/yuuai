@@ -14,6 +14,7 @@ import cc.mewcraft.yuuai.TextResult
 import cc.mewcraft.yuuai.YuuaiPlugin
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.minimessage.MiniMessage
+import net.kyori.adventure.text.minimessage.tag.resolver.Formatter
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder
 import org.bukkit.entity.Player
 import org.bukkit.event.HandlerList
@@ -77,7 +78,7 @@ private class EconomyComponentImpl(
             val currencies = economy.loadedCurrencies
             val currency = findCurrency(currencyString) ?: return TextResult.InvalidValues(currencyString, *currencies.mapNotNull { it.name }.toTypedArray())
             val balance = economy.getBalance(player.uniqueId, currency)
-            val placeholder = Placeholder.parsed("value", balance.toString())
+            val placeholder = Formatter.number("value", balance)
             return TextResult.Success(
                 miniMessage.deserialize(currencyFormat, placeholder)
             )

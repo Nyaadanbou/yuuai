@@ -1,6 +1,5 @@
 layout:
   - standalone:server_name
-  - standalone:world_name
   - adventure_level:level
   - economy:r
   - economy:c
@@ -11,8 +10,8 @@ layout:
 formats:
   standalone:
     enabled: true
-    server_name: "服务器: <value>"
-    world_name: "当前世界: <value>"
+    server_name: "当前世界: <value>"
+    world_name: "当前维度: <value>"
   adventure_level:
     enabled: true
     level: "冒险等级: <value>"

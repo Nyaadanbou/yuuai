@@ -28,6 +28,9 @@ dependencies {
 
     implementation(project(":common"))
 
+    // network
+    implementation(local.network)
+
     // configurate
     implementation(platform(libs.bom.configurate.yaml))
     implementation(platform(libs.bom.configurate.kotlin))

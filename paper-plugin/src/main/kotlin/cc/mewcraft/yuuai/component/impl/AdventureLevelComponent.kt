@@ -20,6 +20,7 @@ import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.minimessage.MiniMessage
+import net.kyori.adventure.text.minimessage.tag.resolver.Formatter
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
@@ -113,7 +114,7 @@ private class AdventureLevelTextData(
         val dataManager = adventureLevel.playerDataManager()
         val data = dataManager.load(player)
         val level = levelCached.computeIfAbsent(LevelCategory.PRIMARY, Object2IntFunction { data.getLevel(LevelCategory.PRIMARY).level })
-        val levelComponentParsed = miniMessage.deserialize(levelFormat, Placeholder.parsed("value", level.toString()))
+        val levelComponentParsed = miniMessage.deserialize(levelFormat, Formatter.number("value", level))
         return levelComponentParsed
     }
 
