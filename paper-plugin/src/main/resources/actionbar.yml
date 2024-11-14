@@ -1,4 +1,5 @@
 format: " - <format:standalone:player_health> - <red>2213"
 
-standalone:
-  player_health: "<red><bold>❤ <gradient:blue:light_blue><value>"
+formats:
+  standalone:
+    player_health: "<red><bold>❤ <gradient:blue:light_blue><value>"

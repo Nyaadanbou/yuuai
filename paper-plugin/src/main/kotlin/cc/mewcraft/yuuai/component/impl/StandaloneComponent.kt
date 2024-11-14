@@ -12,6 +12,7 @@ import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
+import org.bukkit.event.HandlerList
 import org.bukkit.event.player.PlayerChangedWorldEvent
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -89,5 +90,9 @@ private class StandaloneComponentImpl(
             else -> throw IllegalArgumentException("Invalid key value: ${key.value()}")
 
         }
+    }
+
+    override fun unload() {
+        HandlerList.unregisterAll(refresher)
     }
 }

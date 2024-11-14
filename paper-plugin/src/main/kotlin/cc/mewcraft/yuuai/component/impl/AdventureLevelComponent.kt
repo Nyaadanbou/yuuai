@@ -23,6 +23,7 @@ import net.kyori.adventure.text.minimessage.MiniMessage
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
+import org.bukkit.event.HandlerList
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.spongepowered.configurate.ConfigurationNode
@@ -86,6 +87,10 @@ private class AdventureLevelComponentImpl(
             levelTextCached.invalidate(player)
             scoreboardManager.setLine(player, this@AdventureLevelComponentImpl)
         }
+    }
+
+    override fun unload() {
+        HandlerList.unregisterAll(refresher)
     }
 }
 

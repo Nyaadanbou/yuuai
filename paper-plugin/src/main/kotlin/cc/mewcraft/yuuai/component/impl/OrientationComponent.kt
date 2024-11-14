@@ -12,7 +12,9 @@ import com.google.common.cache.LoadingCache
 import net.kyori.adventure.bossbar.BossBar
 import net.kyori.adventure.text.minimessage.MiniMessage
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder
+import org.bukkit.Server
 import org.bukkit.entity.Player
+import org.bukkit.event.HandlerList
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.spongepowered.configurate.ConfigurationNode
@@ -47,6 +49,7 @@ private class OrientationComponentImpl(
     private val overlay: BossBar.Overlay,
     private val text: String,
 ) : OrientationComponent, KoinComponent {
+    private val server: Server by inject()
     private val miniMessage: MiniMessage by inject()
 
     override val namespace: String = OrientationComponent.NAMESPACE
@@ -104,5 +107,9 @@ private class OrientationComponentImpl(
         val bossBar = bossBars[player]
         player.hideBossBar(bossBar)
         bossBars.invalidate(player)
+    }
+
+    override fun unload() {
+        server.onlinePlayers.forEach { hideBossBar(it) }
     }
 }

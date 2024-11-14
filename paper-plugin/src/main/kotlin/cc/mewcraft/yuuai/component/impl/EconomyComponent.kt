@@ -15,6 +15,7 @@ import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.minimessage.MiniMessage
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder
 import org.bukkit.entity.Player
+import org.bukkit.event.HandlerList
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.spongepowered.configurate.ConfigurationNode
@@ -47,7 +48,7 @@ interface EconomyComponent : ScoreboardComponent {
         fun findCurrency(currency: String): Currency? {
             val economy = EconomyProvider.get()
             val currencies = economy.loadedCurrencies
-            return currencies.find { it.symbolOrEmpty.lowercase() == currency }
+            return currencies.find { it.name.lowercase() == currency }
         }
     }
 }
@@ -72,7 +73,7 @@ private class EconomyComponentImpl(
         val currencyFormat = formats[currencyString]
         if (currencyFormat != null) {
             val currencies = economy.loadedCurrencies
-            val currency = findCurrency(currencyString) ?: return TextResult.InvalidValues(currencyString, *currencies.map { it.displayName }.toTypedArray())
+            val currency = findCurrency(currencyString) ?: return TextResult.InvalidValues(currencyString, *currencies.mapNotNull { it.name }.toTypedArray())
             val balance = economy.getBalance(player.uniqueId, currency)
             val placeholder = Placeholder.parsed("value", balance.toString())
             return TextResult.Success(
@@ -81,5 +82,9 @@ private class EconomyComponentImpl(
         }
 
         return TextResult.InvalidValues(currencyString, *formats.keys.toTypedArray())
+    }
+
+    override fun unload() {
+        HandlerList.unregisterAll(refresher)
     }
 }

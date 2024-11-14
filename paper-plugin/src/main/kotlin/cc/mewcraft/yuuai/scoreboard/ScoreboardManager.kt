@@ -57,6 +57,7 @@ class ScoreboardManager : KoinComponent {
     fun reload() {
         scoreboards.values.forEach { it.hide() }
         scoreboards.clear()
+        config.scoreboardComponents.forEach { it.unload() }
         plugin.server.onlinePlayers.forEach { showScoreboard(it) }
     }
 

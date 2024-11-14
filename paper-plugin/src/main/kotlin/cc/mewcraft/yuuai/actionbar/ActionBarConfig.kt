@@ -19,7 +19,7 @@ class ActionBarConfig(
 
     val actionBarComponents: List<ActionbarComponent> by reloadable {
         val actionbars = mutableListOf<ActionbarComponent>()
-        for ((key, node) in root.childrenMap()) {
+        for ((key, node) in root.node("formats").childrenMap()) {
             val actionbarFactory = ActionbarComponents.getActionBarFactory(key.toString())
             if (actionbarFactory == null) {
                 logger.warn("Unknown actionbar factory key: $key")

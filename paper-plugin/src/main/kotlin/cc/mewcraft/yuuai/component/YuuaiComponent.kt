@@ -13,4 +13,9 @@ interface YuuaiComponent {
      * 组件的刷新器, 用于刷新组件的显示内容.
      */
     val refresher: YuuaiRefresher?
+
+    /**
+     * 卸载逻辑.
+     */
+    fun unload()
 }
