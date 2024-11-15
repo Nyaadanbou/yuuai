@@ -17,7 +17,7 @@ internal fun actionbarModule(): Module = module {
             .path(get<Path>(named(PLUGIN_DATA_DIR)).resolve(ACTIONBAR_PATH))
             .nodeStyle(NodeStyle.BLOCK)
             .build()
-        ActionBarConfig(loader, get(), get())
+        ActionBarConfig(loader, get())
     }
 
     singleOf(::ActionbarManager)

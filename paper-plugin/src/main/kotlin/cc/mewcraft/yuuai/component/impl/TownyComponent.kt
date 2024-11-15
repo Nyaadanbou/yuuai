@@ -6,7 +6,6 @@ import cc.mewcraft.yuuai.YuuaiPlugin
 import cc.mewcraft.yuuai.component.ScoreboardComponent
 import cc.mewcraft.yuuai.component.ScoreboardComponentFactory
 import cc.mewcraft.yuuai.component.ServerTickRefresher
-import cc.mewcraft.yuuai.component.YuuaiRefresher
 import cc.mewcraft.yuuai.component.impl.TownyComponent.Companion.NAMESPACE
 import cc.mewcraft.yuuai.component.impl.TownyComponent.Companion.VALUES
 import cc.mewcraft.yuuai.scoreboard.ScoreboardManager
@@ -16,6 +15,7 @@ import net.kyori.adventure.text.minimessage.MiniMessage
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder
 import org.bukkit.entity.Player
 import org.bukkit.event.HandlerList
+import org.bukkit.event.Listener
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.spongepowered.configurate.ConfigurationNode
@@ -54,7 +54,7 @@ private class TownyComponentImpl(
     private val miniMessage: MiniMessage by inject()
 
     override val namespace: String = NAMESPACE
-    private val refresher: YuuaiRefresher = ServerTickRefresher(20) { player ->
+    private val refresher: Listener = ServerTickRefresher(20) { player ->
         scoreboardManager.setLine(player, this@TownyComponentImpl)
     }
 

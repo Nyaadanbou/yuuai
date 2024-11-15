@@ -8,15 +8,10 @@ import org.bukkit.event.Listener
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-/**
- * 代表一个用于刷新组件内系统的对象.
- */
-interface YuuaiRefresher : Listener
-
 class ServerTickRefresher(
     private val tickPerRefresh: Int,
     private val action: (Player) -> Unit
-) : YuuaiRefresher {
+) : Listener {
     companion object : KoinComponent {
         private val server: Server by inject()
     }

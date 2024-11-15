@@ -17,7 +17,7 @@ internal fun bossBarModule(): Module = module {
             .path(get<Path>(named(PLUGIN_DATA_DIR)).resolve(BOSS_BAR_PATH))
             .nodeStyle(NodeStyle.BLOCK)
             .build()
-        BossBarConfig(loader, get(), get())
+        BossBarConfig(loader, get())
     }
 
     singleOf(::BossBarHandler)

@@ -1,7 +1,6 @@
 package cc.mewcraft.yuuai.actionbar
 
 import cc.mewcraft.yuuai.CheckResult
-import cc.mewcraft.yuuai.YuuaiPlugin
 import cc.mewcraft.yuuai.component.ActionbarComponent
 import cc.mewcraft.yuuai.component.ActionbarComponents
 import cc.mewcraft.yuuai.util.reloadable
@@ -10,14 +9,16 @@ import org.spongepowered.configurate.loader.ConfigurationLoader
 
 class ActionBarConfig(
     loader: ConfigurationLoader<*>,
-    private val plugin: YuuaiPlugin,
     private val logger: Logger,
 ) {
     private val root by reloadable { loader.load() }
 
     val format: String by reloadable { root.node("format").string ?: "" }
 
-    val actionBarComponents: List<ActionbarComponent> by reloadable {
+    val actionBarComponents: List<ActionbarComponent> by reloadable(
+        onLoad = { it.forEach { actionbarComponent -> actionbarComponent.load() } },
+        onUnload = { it?.forEach { actionbarComponent -> actionbarComponent.unload() } }
+    ) {
         val actionbars = mutableListOf<ActionbarComponent>()
         for ((key, node) in root.node("formats").childrenMap()) {
             val actionbarFactory = ActionbarComponents.getActionBarFactory(key.toString())
@@ -41,10 +42,7 @@ class ActionBarConfig(
 
             runCatching { actionbarFactory.getComponent(node) }
                 .onFailure { logger.warn("Failed to get actionbar factory: $key", it) }
-                .onSuccess { bossBarComponent ->
-                    bossBarComponent.load()
-                    actionbars.add(bossBarComponent)
-                }
+                .onSuccess { actionbarComponent -> actionbars.add(actionbarComponent) }
         }
         actionbars
     }

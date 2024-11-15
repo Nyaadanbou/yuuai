@@ -1,7 +1,6 @@
 package cc.mewcraft.yuuai.bossbar
 
 import cc.mewcraft.yuuai.CheckResult
-import cc.mewcraft.yuuai.YuuaiPlugin
 import cc.mewcraft.yuuai.component.BossBarComponent
 import cc.mewcraft.yuuai.component.BossBarComponents
 import cc.mewcraft.yuuai.util.reloadable
@@ -10,12 +9,14 @@ import org.spongepowered.configurate.loader.ConfigurationLoader
 
 class BossBarConfig(
     loader: ConfigurationLoader<*>,
-    private val plugin: YuuaiPlugin,
     private val logger: Logger,
 ) {
     private val root by reloadable { loader.load() }
 
-    val bossBarComponents: List<BossBarComponent> by reloadable {
+    val bossBarComponents: List<BossBarComponent> by reloadable(
+        onLoad = { it.forEach { bossBarComponent -> bossBarComponent.load() } },
+        onUnload = { it?.forEach { bossBarComponent -> bossBarComponent.unload() } }
+    ) {
         val bossBars = mutableListOf<BossBarComponent>()
         for ((key, node) in root.childrenMap()) {
             val bossBarFactory = BossBarComponents.getBossBarFactory(key.toString())
@@ -39,10 +40,7 @@ class BossBarConfig(
 
             runCatching { bossBarFactory.getComponent(node) }
                 .onFailure { logger.warn("Failed to get bossbar factory: $key", it) }
-                .onSuccess { bossBarComponent ->
-                    bossBarComponent.load()
-                    bossBars.add(bossBarComponent)
-                }
+                .onSuccess { bossBarComponent -> bossBars.add(bossBarComponent) }
         }
         bossBars
     }

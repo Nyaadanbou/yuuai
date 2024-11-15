@@ -18,6 +18,7 @@ import cc.mewcraft.yuuai.text.textModule
 import com.github.shynixn.mccoroutine.bukkit.registerSuspendingEvents
 import me.lucko.helper.Schedulers
 import me.lucko.helper.plugin.KExtendedJavaPlugin
+import net.megavex.scoreboardlibrary.api.ScoreboardLibrary
 import org.bukkit.event.Listener
 import org.koin.core.component.get
 import org.koin.core.context.startKoin
@@ -48,6 +49,10 @@ class YuuaiPlugin : KExtendedJavaPlugin() {
     override suspend fun enable() {
         // Reload the configuration
         reload()
+
+        /* Initialize ScoreboardLibrary */
+
+        Injector.get<ScoreboardLibrary>()
 
         /* Initialize managers */
 

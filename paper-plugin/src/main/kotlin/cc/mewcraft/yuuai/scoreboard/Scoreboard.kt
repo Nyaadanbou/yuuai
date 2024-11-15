@@ -41,14 +41,19 @@ class Scoreboard(
         sidebar.clearLines()
     }
 
-    fun line(new: ScoreboardComponent) {
+    fun line(new: ScoreboardComponent, changedValue: String?) {
         val namespace = new.namespace
         val linesIterator = lines.iterator()
 
         while (linesIterator.hasNext()) {
             val (lineKey, data) = linesIterator.next()
-            // 如果行的命名空间与要改变的侧边栏组件的命名空间相同，那么更新这一行
+            // 如果行的命名空间与要改变的侧边栏组件的命名空间相同，那么更新这一行.
             if (lineKey.namespace() == namespace) {
+                if (changedValue != null && lineKey.value() != changedValue) {
+                    // 如果有"仅修改特定的某行 value"的需求, 则执行更严格的刷新措施.
+                    continue
+                }
+
                 val text = new.textComponent(lineKey)
                 sidebar.line(data.index, text)
             }

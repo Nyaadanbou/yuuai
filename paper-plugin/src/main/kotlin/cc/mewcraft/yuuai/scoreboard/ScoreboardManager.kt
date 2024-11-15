@@ -50,15 +50,13 @@ class ScoreboardManager : KoinComponent {
         scoreboards.remove(player.uniqueId)
     }
 
-    fun setLine(player: Player, scoreboardComponent: ScoreboardComponent) {
-        scoreboards[player.uniqueId]?.line(scoreboardComponent)
+    fun setLine(player: Player, scoreboardComponent: ScoreboardComponent, changedValue: String? = null) {
+        scoreboards[player.uniqueId]?.line(scoreboardComponent, changedValue)
     }
 
     fun reload() {
         scoreboards.values.forEach { it.hide() }
         scoreboards.clear()
-        config.scoreboardComponents.forEach { it.unload() }
-        config.scoreboardComponents.forEach { it.load() }
         plugin.server.onlinePlayers.forEach { showScoreboard(it) }
     }
 

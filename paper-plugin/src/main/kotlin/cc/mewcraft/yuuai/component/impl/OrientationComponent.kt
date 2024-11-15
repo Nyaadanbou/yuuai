@@ -6,7 +6,6 @@ import cc.mewcraft.yuuai.CheckResult
 import cc.mewcraft.yuuai.YuuaiPlugin
 import cc.mewcraft.yuuai.component.BossBarComponent
 import cc.mewcraft.yuuai.component.BossBarComponentFactory
-import cc.mewcraft.yuuai.event.YuuaiReloadEvent
 import cc.mewcraft.yuuai.util.DurationFormatter
 import com.google.common.cache.CacheBuilder
 import com.google.common.cache.CacheLoader
@@ -16,9 +15,7 @@ import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.minimessage.MiniMessage
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder
 import org.bukkit.entity.Player
-import org.bukkit.event.EventHandler
 import org.bukkit.event.HandlerList
-import org.bukkit.event.Listener
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.spongepowered.configurate.ConfigurationNode
@@ -61,7 +58,6 @@ private class OrientationComponentImpl(
 
     override val namespace: String = OrientationComponent.NAMESPACE
 
-    private val reloadListener: Listener = ReloadListener()
     private val timeFormatter: DurationFormatter = DurationFormatter(true, ChronoUnit.MINUTES)
 
     private val bossBars: LoadingCache<Player, BossBar> = CacheBuilder.newBuilder()
@@ -119,19 +115,9 @@ private class OrientationComponentImpl(
         bossBars.invalidate(player)
     }
 
-    override fun load() {
-        plugin.registerSuspendListener(reloadListener)
-    }
+    override fun load() = Unit
 
     override fun unload() {
         bossBars.asMap().forEach { hideBossBar(it.key) }
-        HandlerList.unregisterAll(reloadListener)
-    }
-
-    private inner class ReloadListener : Listener {
-        @EventHandler
-        private fun on(event: YuuaiReloadEvent) {
-            unload()
-        }
     }
 }

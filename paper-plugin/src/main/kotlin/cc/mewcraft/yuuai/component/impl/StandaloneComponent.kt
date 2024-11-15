@@ -7,6 +7,7 @@ import cc.mewcraft.yuuai.TextResult
 import cc.mewcraft.yuuai.YuuaiPlugin
 import cc.mewcraft.yuuai.component.impl.StandaloneComponent.Companion.NAMESPACE
 import cc.mewcraft.yuuai.component.impl.StandaloneComponent.Companion.VALUES
+import cc.mewcraft.yuuai.component.impl.StandaloneComponent.Companion.WORLD_NAME
 import cc.mewcraft.yuuai.scoreboard.ScoreboardManager
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.minimessage.MiniMessage
@@ -17,6 +18,7 @@ import org.bukkit.attribute.Attribute
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.HandlerList
+import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerChangedWorldEvent
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -25,7 +27,12 @@ import org.spongepowered.configurate.ConfigurationNode
 interface StandaloneComponent : ScoreboardComponent, ActionbarComponent {
     companion object : AbstractYuuaiComponentFactory<StandaloneComponent>(), ScoreboardComponentFactory<StandaloneComponent>, ActionbarComponentFactory<StandaloneComponent> {
         const val NAMESPACE = "standalone"
-        val VALUES = arrayOf("server_name", "world_name", "player_health", "player_max_health")
+        const val SERVER_NAME = "server_name"
+        const val WORLD_NAME = "world_name"
+        const val PLAYER_HEALTH = "player_health"
+        const val PLAYER_MAX_HEALTH = "player_max_health"
+
+        val VALUES = arrayOf(SERVER_NAME, WORLD_NAME, PLAYER_HEALTH, PLAYER_MAX_HEALTH)
 
         override fun check(node: ConfigurationNode): CheckResult {
             return CheckResult.Success
@@ -59,18 +66,18 @@ private class StandaloneComponentImpl(
         val maxHealth = it.getAttribute(Attribute.GENERIC_MAX_HEALTH)?.value ?: 0
         Formatter.number("value", maxHealth)
     }
-    private val refresher: YuuaiRefresher = Refresher()
+    private val refresher: Listener = Refresher()
 
     override val namespace: String = NAMESPACE
 
-    private inner class Refresher : YuuaiRefresher {
+    private inner class Refresher : Listener {
         @EventHandler
         private fun on(event: PlayerChangedWorldEvent) {
-            refresh(event.player)
+            refresh(event.player, WORLD_NAME)
         }
 
-        fun refresh(player: Player) {
-            scoreboardManager.setLine(player, this@StandaloneComponentImpl)
+        fun refresh(player: Player, changedValue: String) {
+            scoreboardManager.setLine(player, this@StandaloneComponentImpl, changedValue)
         }
     }
 

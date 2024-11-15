@@ -3,21 +3,20 @@ package cc.mewcraft.yuuai.component.impl
 import cc.mewcraft.economy.api.Currency
 import cc.mewcraft.economy.api.EconomyProvider
 import cc.mewcraft.yuuai.CheckResult
+import cc.mewcraft.yuuai.TextResult
+import cc.mewcraft.yuuai.YuuaiPlugin
 import cc.mewcraft.yuuai.component.ScoreboardComponent
 import cc.mewcraft.yuuai.component.ScoreboardComponentFactory
 import cc.mewcraft.yuuai.component.ServerTickRefresher
-import cc.mewcraft.yuuai.component.YuuaiRefresher
 import cc.mewcraft.yuuai.component.impl.EconomyComponent.Companion.NAMESPACE
 import cc.mewcraft.yuuai.component.impl.EconomyComponent.Companion.findCurrency
 import cc.mewcraft.yuuai.scoreboard.ScoreboardManager
-import cc.mewcraft.yuuai.TextResult
-import cc.mewcraft.yuuai.YuuaiPlugin
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.minimessage.MiniMessage
 import net.kyori.adventure.text.minimessage.tag.resolver.Formatter
-import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder
 import org.bukkit.entity.Player
 import org.bukkit.event.HandlerList
+import org.bukkit.event.Listener
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.spongepowered.configurate.ConfigurationNode
@@ -63,7 +62,7 @@ private class EconomyComponentImpl(
     private val miniMessage: MiniMessage by inject()
 
     override val namespace: String = NAMESPACE
-    private val refresher: YuuaiRefresher = ServerTickRefresher(20) { player ->
+    private val refresher: Listener = ServerTickRefresher(20) { player ->
         scoreboardManager.setLine(player, this)
     }
 
