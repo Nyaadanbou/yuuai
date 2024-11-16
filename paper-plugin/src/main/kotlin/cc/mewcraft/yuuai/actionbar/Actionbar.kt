@@ -21,7 +21,7 @@ import org.slf4j.Logger
 class Actionbar(
     private val player: Player,
     private val originText: String,
-    private val showComponents: List<ActionbarComponent>
+    private val showComponents: List<ActionbarComponent>,
 ) {
     companion object : KoinComponent {
         private val plugin: YuuaiPlugin by inject()
@@ -63,26 +63,28 @@ class Actionbar(
      */
     private fun formatTagResolver(): TagResolver {
         return TagResolver.resolver("format") { queue, context ->
-            val arg1 = queue.popOr("Cannot find the first argument of format tag.").lowerValue()
-            val arg2 = queue.popOr("Cannot find the second argument of format tag.").lowerValue()
-            val key = Key.key(arg1, arg2)
-            val showComponents = showComponents.find { it.namespace == key.namespace() } ?: error("Cannot find the component with namespace $key.")
-            val formattedText = showComponents.textComponent(key)
+            val namespace = queue.popOr("Cannot find the namespace argument of format tag.").lowerValue()
+            val arguments = arrayListOf<String>()
+            while (queue.hasNext()) {
+                arguments.add(queue.pop().lowerValue())
+            }
+            val showComponents = showComponents.find { it.namespace == namespace } ?: error("Cannot find the component with namespace $namespace.")
+            val formattedText = showComponents.textComponent(namespace, arguments.toTypedArray())
 
             Tag.inserting(formattedText)
         }
     }
 
-    private fun ActionbarComponent.textComponent(lineKey: Key): Component {
-        return when (val textResult = text(lineKey, player)) {
+    private fun ActionbarComponent.textComponent(namespace: String, arguments: Array<String>): Component {
+        return when (val textResult = text(namespace, arguments, player)) {
             is TextResult.Success -> textResult.value
             is TextResult.InvalidNamespace -> {
-               logger.error("Invalid namespace when getting text for scoreboard: ${lineKey.namespace()}, expected: ${textResult.correctNamespace}")
+                logger.error("Invalid namespace when getting text for actionbar: $namespace, expected: ${textResult.correctNamespace}")
                 Component.text("Error").color(ERROR_COLOR)
             }
 
             is TextResult.InvalidValues -> {
-                logger.warn("Invalid values when getting text for scoreboard: ${lineKey.namespace()}, expected: ${textResult.correctValues.joinToString()}")
+                logger.warn("Invalid values when getting text for actionbar: $$namespace, expected: ${textResult.correctValues.joinToString()}")
                 Component.text("Error").color(ERROR_COLOR)
             }
         }

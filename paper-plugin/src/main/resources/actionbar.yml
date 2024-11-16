@@ -1,5 +1,6 @@
-format: "<format:standalone:player_health><gray>/<format:standalone:player_max_health>"
+format: "<format:wakame:player_health><gray>/<format:wakame:player_max_health>"
 
 formats:
-  standalone:
-    player_health: "<red><bold>❤ <gradient:#ff9a9e:#fad0c4><value>"
+  wakame:
+    attributes:
+      player_health: "<red><bold>❤ <gradient:#ff9a9e:#fad0c4><value>"

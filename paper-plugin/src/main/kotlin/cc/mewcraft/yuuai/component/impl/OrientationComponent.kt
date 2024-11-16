@@ -3,19 +3,19 @@ package cc.mewcraft.yuuai.component.impl
 import cc.mewcraft.orientation.OrientationProvider
 import cc.mewcraft.orientation.novice.NoviceRefreshListener
 import cc.mewcraft.yuuai.CheckResult
-import cc.mewcraft.yuuai.YuuaiPlugin
+import cc.mewcraft.yuuai.TextResult
 import cc.mewcraft.yuuai.component.BossBarComponent
 import cc.mewcraft.yuuai.component.BossBarComponentFactory
 import cc.mewcraft.yuuai.util.DurationFormatter
 import com.google.common.cache.CacheBuilder
 import com.google.common.cache.CacheLoader
 import com.google.common.cache.LoadingCache
+import kotlinx.coroutines.runBlocking
 import net.kyori.adventure.bossbar.BossBar
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.minimessage.MiniMessage
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder
 import org.bukkit.entity.Player
-import org.bukkit.event.HandlerList
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.spongepowered.configurate.ConfigurationNode
@@ -53,7 +53,6 @@ private class OrientationComponentImpl(
     private val overlay: BossBar.Overlay,
     private val text: String,
 ) : OrientationComponent, KoinComponent {
-    private val plugin: YuuaiPlugin by inject()
     private val miniMessage: MiniMessage by inject()
 
     override val namespace: String = OrientationComponent.NAMESPACE
@@ -106,6 +105,15 @@ private class OrientationComponentImpl(
         )
         novice.addRefreshListener(OrientationComponent.LISTENER_KEY, refreshListener)
         novice.refresh()
+    }
+
+    override fun text(namespace: String, arguments: Array<String>, player: Player): TextResult {
+        val orientation = OrientationProvider.get()
+        val novice = orientation.getNovice(player.uniqueId)
+        val timeLeft = runBlocking { novice.timeLeftMillSeconds() }
+        return TextResult.Success(
+            miniMessage.deserialize(text, Placeholder.parsed("value", timeFormatter.format(Duration.ofMillis(timeLeft))))
+        )
     }
 
     override fun hideBossBar(player: Player) {

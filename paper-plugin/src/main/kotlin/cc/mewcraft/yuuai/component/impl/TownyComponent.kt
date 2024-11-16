@@ -10,7 +10,6 @@ import cc.mewcraft.yuuai.component.impl.TownyComponent.Companion.NAMESPACE
 import cc.mewcraft.yuuai.component.impl.TownyComponent.Companion.VALUES
 import cc.mewcraft.yuuai.scoreboard.ScoreboardManager
 import com.palmergames.bukkit.towny.TownyAPI
-import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.minimessage.MiniMessage
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder
 import org.bukkit.entity.Player
@@ -58,16 +57,17 @@ private class TownyComponentImpl(
         scoreboardManager.setLine(player, this@TownyComponentImpl)
     }
 
-    override fun text(key: Key, player: Player): TextResult {
-        if (key.namespace() != NAMESPACE)
-            return TextResult.InvalidNamespace(key.namespace(), NAMESPACE)
-        if (key.value() !in VALUES)
-            return TextResult.InvalidValues(key.value(), *VALUES)
+    override fun text(namespace: String, arguments: Array<String>, player: Player): TextResult {
+        if (namespace != NAMESPACE)
+            return TextResult.InvalidNamespace(namespace, NAMESPACE)
+        val value = arguments[0]
+        if (value !in VALUES)
+            return TextResult.InvalidValues(value, *VALUES)
 
         val townyAPI = TownyAPI.getInstance()
         val resident = townyAPI.getResident(player)
 
-        return when (key.value()) {
+        return when (value) {
             "town_name" -> {
                 val town = resident?.townOrNull
                 val placeholder = if (town != null) {
@@ -92,7 +92,7 @@ private class TownyComponentImpl(
                 )
             }
 
-            else -> throw IllegalArgumentException("Invalid key value: ${key.value()}")
+            else -> throw IllegalArgumentException("Invalid key value: $value")
         }
     }
 

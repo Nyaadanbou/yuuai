@@ -34,7 +34,7 @@ class ActionBarConfig(
                     continue
                 }
                 is CheckResult.MissingDependency -> {
-                    logger.warn("Missing dependency for actionbar factory: $key, dependencies: ${checkResult.missingDependencies}")
+                    logger.warn("Missing dependency for actionbar factory: $key, dependencies: ${checkResult.missingDependencies.joinToString()}")
                     continue
                 }
 

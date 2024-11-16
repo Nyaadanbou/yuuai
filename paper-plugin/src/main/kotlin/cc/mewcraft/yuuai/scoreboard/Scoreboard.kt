@@ -30,7 +30,7 @@ class Scoreboard(
 
     fun show() {
         for ((lineKey, data) in lines) {
-            val text = data.component.textComponent(lineKey)
+            val text = data.component.textComponent(lineKey.namespace(), arrayOf(lineKey.value()))
             sidebar.line(data.index, text)
         }
         sidebar.addPlayer(player)
@@ -54,22 +54,22 @@ class Scoreboard(
                     continue
                 }
 
-                val text = new.textComponent(lineKey)
+                val text = new.textComponent(lineKey.namespace(), arrayOf(lineKey.value()))
                 sidebar.line(data.index, text)
             }
         }
     }
 
-    private fun ScoreboardComponent.textComponent(lineKey: Key): Component {
-        return when (val textResult = text(lineKey, player)) {
+    private fun ScoreboardComponent.textComponent(namespace: String, arguments: Array<String>): Component {
+        return when (val textResult = text(namespace, arguments, player)) {
             is TextResult.Success -> textResult.value
             is TextResult.InvalidNamespace -> {
-                ScoreboardSupport.logger.error("Invalid namespace when getting text for scoreboard: ${lineKey.namespace()}, expected: ${textResult.correctNamespace}")
+                ScoreboardSupport.logger.error("Invalid namespace when getting text for scoreboard: $namespace, expected: ${textResult.correctNamespace}")
                 Component.text("Error").color(ScoreboardSupport.ERROR_COLOR)
             }
 
             is TextResult.InvalidValues -> {
-                ScoreboardSupport.logger.warn("Invalid values when getting text for scoreboard: ${lineKey.namespace()}, expected: ${textResult.correctValues.joinToString()}")
+                ScoreboardSupport.logger.warn("Invalid values when getting text for scoreboard: $namespace, expected: ${textResult.correctValues.joinToString()}")
                 Component.text("Error").color(ScoreboardSupport.ERROR_COLOR)
             }
         }

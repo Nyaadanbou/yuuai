@@ -23,6 +23,7 @@ dependencies {
     compileOnly(local.helper)
     compileOnly(local.orientation)
     compileOnly(local.towny)
+    compileOnly(local.wakame.api)
 
     /* internal */
 
@@ -80,6 +81,10 @@ paper {
         register("Towny") {
             required = false
             load = RelativeLoadOrder.OMIT // 懒加载 class
+        }
+        register("Wakame") {
+            required = false
+            load = RelativeLoadOrder.BEFORE
         }
     }
 }

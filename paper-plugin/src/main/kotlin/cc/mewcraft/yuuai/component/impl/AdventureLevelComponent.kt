@@ -70,15 +70,16 @@ private class AdventureLevelComponentImpl(
 
     override val namespace: String = NAMESPACE
 
-    override fun text(key: Key, player: Player): TextResult {
-        if (key.namespace() != NAMESPACE)
-            return TextResult.InvalidNamespace(key.namespace(), NAMESPACE)
-        if (key.value() !in VALUES)
-            return TextResult.InvalidValues(key.value(), *VALUES)
-        return when (key.value()) {
+    override fun text(namespace: String, arguments: Array<String>, player: Player): TextResult {
+        if (namespace != NAMESPACE)
+            return TextResult.InvalidNamespace(namespace, NAMESPACE)
+        val value = arguments[0]
+        if (value !in VALUES)
+            return TextResult.InvalidValues(value, *VALUES)
+        return when (value) {
             "level" -> TextResult.Success(levelTextCached[player].component())
 
-            else -> TextResult.InvalidValues(key.value(), *VALUES)
+            else -> TextResult.InvalidValues(value, *VALUES)
         }
     }
 

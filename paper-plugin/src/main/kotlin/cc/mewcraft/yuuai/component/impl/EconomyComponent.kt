@@ -66,12 +66,12 @@ private class EconomyComponentImpl(
         scoreboardManager.setLine(player, this)
     }
 
-    override fun text(key: Key, player: Player): TextResult {
-        if (key.namespace() != NAMESPACE)
-            return TextResult.InvalidNamespace(key.namespace(), NAMESPACE)
+    override fun text(namespace: String, arguments: Array<String>, player: Player): TextResult {
+        if (namespace != NAMESPACE)
+            return TextResult.InvalidNamespace(namespace, NAMESPACE)
         val economy = EconomyProvider.get()
 
-        val currencyString = key.value()
+        val currencyString = arguments[0]
         val currencyFormat = formats[currencyString]
         if (currencyFormat != null) {
             val currencies = economy.loadedCurrencies

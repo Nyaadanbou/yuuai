@@ -32,7 +32,7 @@ class BossBarConfig(
                     continue
                 }
                 is CheckResult.MissingDependency -> {
-                    logger.warn("Missing dependency for bossbar factory: $key, dependencies: ${checkResult.missingDependencies}")
+                    logger.warn("Missing dependency for bossbar factory: $key, dependencies: ${checkResult.missingDependencies.joinToString()}")
                     continue
                 }
 

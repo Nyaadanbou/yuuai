@@ -26,7 +26,7 @@ sealed interface TextResult {
 
             other as InvalidValues
 
-            return correctValues.contentEquals(other.correctValues)
+            return other.input == input && correctValues.contentEquals(other.correctValues)
         }
 
         override fun hashCode(): Int {
