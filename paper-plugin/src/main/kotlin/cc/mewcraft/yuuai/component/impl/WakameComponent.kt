@@ -7,6 +7,7 @@ import cc.mewcraft.yuuai.TextResult
 import cc.mewcraft.yuuai.component.ActionbarComponent
 import cc.mewcraft.yuuai.component.ActionbarComponentFactory
 import cc.mewcraft.yuuai.component.impl.WakameComponent.Companion.NAMESPACE
+import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.minimessage.MiniMessage
 import net.kyori.adventure.text.minimessage.tag.resolver.Formatter
 import org.bukkit.entity.Player
@@ -56,10 +57,17 @@ private class WakameComponentImpl(
         val attributeString = arguments[1]
         if (attributeString !in attributeFormats.keys)
             return TextResult.InvalidValues(attributeString, *attributeFormats.keys.toTypedArray())
+        val hideWhenZero = if (arguments.size == 3) {
+            arguments[2].toBooleanStrictOrNull() ?: false
+        } else false
 
         val attribute = attributeProvider.getSingleton(attributeString) ?: return TextResult.InvalidValues(attributeString, *attributeFormats.keys.toTypedArray())
         val format = attributeFormats[attributeString]!!
         val attributeData = attributeMapAccess.get(player).getOrThrow().getValue(attribute)
+
+        if (hideWhenZero && attributeData == .0) {
+            return TextResult.Success(Component.empty())
+        }
 
         return TextResult.Success(
             miniMessage.deserialize(format, Formatter.number("value", attributeData))
