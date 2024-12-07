@@ -17,10 +17,10 @@ import com.google.common.cache.CacheBuilder
 import com.google.common.cache.CacheLoader
 import com.google.common.cache.LoadingCache
 import kotlinx.coroutines.*
-import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.minimessage.MiniMessage
 import net.kyori.adventure.text.minimessage.tag.resolver.Formatter
+import org.bukkit.Server
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.HandlerList
@@ -62,7 +62,7 @@ private class AdventureLevelComponentImpl(
     private val levelTextCached: LoadingCache<Player, AdventureLevelTextData> = CacheBuilder.newBuilder()
         .weakKeys()
         .build(
-            CacheLoader.from { player -> AdventureLevelTextData(player, levelFormat, this) }
+            CacheLoader.from { player -> AdventureLevelTextData(player.uniqueId, levelFormat, this) }
         )
 
     private val playersCanCheckLevel: MutableSet<UUID> = ConcurrentHashMap.newKeySet()
@@ -109,18 +109,23 @@ private class AdventureLevelComponentImpl(
 }
 
 private class AdventureLevelTextData(
-    private val player: Player,
+    private val uniqueId: UUID,
     private val levelFormat: String,
     private val component: AdventureLevelComponent
 ) {
     companion object : KoinComponent {
         private val miniMessage: MiniMessage by inject()
+        private val server: Server by inject()
     }
+
+    private val player: Player?
+        get() = server.getPlayer(uniqueId)
 
     private val scope: CoroutineScope = AdventureLevelSupport.plugin.scope + CoroutineName("yuuai-adventure-level-refresh-scope") + AdventureLevelSupport.plugin.asyncDispatcher
 
     private var job: Job = scope.launch {
         while (isActive) {
+            val player = player ?: return@launch
             AdventureLevelSupport.scoreboardManager.setLine(player, component)
             delay(1000)
         }
@@ -129,7 +134,7 @@ private class AdventureLevelTextData(
     fun component(): Component {
         val adventureLevel = AdventureLevelProvider.get()
         val dataManager = adventureLevel.playerDataManager()
-        val data = dataManager.load(player)
+        val data = dataManager.load(uniqueId)
         val level = data.getLevel(LevelCategory.PRIMARY).level
         val levelComponentParsed = miniMessage.deserialize(levelFormat, Formatter.number("value", level))
         return levelComponentParsed
