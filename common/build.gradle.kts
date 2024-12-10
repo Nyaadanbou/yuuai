@@ -1,10 +1,10 @@
 plugins {
-    id("example-conventions.commons")
+    id("yuuai-conventions.commons")
     id("nyaadanbou-conventions.repositories")
     `maven-publish`
 }
 
-group = "cc.mewcraft.example"
+group = "cc.mewcraft.yuuai"
 version = "1.0.0-SNAPSHOT"
 
 dependencies {

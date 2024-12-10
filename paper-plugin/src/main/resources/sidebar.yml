@@ -1,0 +1,28 @@
+layout:
+  - standalone:server_name
+  - adventure_level:level
+  - economy:r
+  - economy:c
+  - towny:town_name
+  - towny:nation_name
+  - origin:origin_name
+
+formats:
+  standalone:
+    enabled: true
+    server_name: "当前世界: <value>"
+    world_name: "当前维度: <value>"
+  adventure_level:
+    enabled: true
+    level: "冒险等级: <value>"
+  economy:
+    enabled: true
+    r: "硬币余额：<value>"
+    c: "米币余额：<value>"
+  towny:
+    enabled: true
+    town_name: "我的城镇: <value>"
+    nation_name: "我的国家: <value>"
+  origin:
+    enabled: true
+    origin_name: "所属家乡: <value>"

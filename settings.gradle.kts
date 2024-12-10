@@ -26,6 +26,7 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "nyaadanbou-plugin-template"
+rootProject.name = "yuuai"
 
-include(":api")
+include(":common")
+include("paper-plugin")

@@ -1,0 +1,6 @@
+format: "<format:wakame:player_health><gray>/<format:wakame:player_max_health>"
+
+formats:
+  wakame:
+    attributes:
+      player_health: "<red><bold>❤ <gradient:#ff9a9e:#fad0c4><value>"
