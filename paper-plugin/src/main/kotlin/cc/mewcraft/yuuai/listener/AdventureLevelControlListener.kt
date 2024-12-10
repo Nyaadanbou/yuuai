@@ -4,6 +4,7 @@ import cc.mewcraft.adventurelevel.event.AdventureLevelDataLoadEvent
 import cc.mewcraft.yuuai.actionbar.ActionbarHandler
 import cc.mewcraft.yuuai.bossbar.BossBarHandler
 import cc.mewcraft.yuuai.event.ScoreboardHandler
+import org.bukkit.Bukkit
 import org.bukkit.event.EventHandler
 import org.bukkit.event.player.PlayerQuitEvent
 
@@ -14,7 +15,7 @@ class AdventureLevelControlListener(
 ) : ControlListener {
     @EventHandler
     private fun onPlayerInit(event: AdventureLevelDataLoadEvent) {
-        val player = event.playerData.player ?: return
+        val player = Bukkit.getPlayer(event.userData.uuid) ?: return
         actionbarManager.playerInit(player)
         bossBarHandler.playerInit(player)
         scoreboardHandler.playerInit(player)

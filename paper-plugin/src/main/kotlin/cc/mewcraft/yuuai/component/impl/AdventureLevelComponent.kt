@@ -98,7 +98,7 @@ private class AdventureLevelComponentImpl(
     private inner class PlayerAdder : Listener {
         @EventHandler
         private fun onLevelLoad(e: AdventureLevelDataLoadEvent) {
-            playersCanCheckLevel.add(e.playerData.uuid)
+            playersCanCheckLevel.add(e.userData.uuid)
         }
 
         @EventHandler
@@ -111,7 +111,7 @@ private class AdventureLevelComponentImpl(
 private class AdventureLevelTextData(
     private val uniqueId: UUID,
     private val levelFormat: String,
-    private val component: AdventureLevelComponent
+    private val component: AdventureLevelComponent,
 ) {
     companion object : KoinComponent {
         private val miniMessage: MiniMessage by inject()
@@ -133,9 +133,9 @@ private class AdventureLevelTextData(
 
     fun component(): Component {
         val adventureLevel = AdventureLevelProvider.get()
-        val dataManager = adventureLevel.playerDataManager()
-        val data = dataManager.load(uniqueId)
-        val level = data.getLevel(LevelCategory.PRIMARY).level
+        val userRepository = adventureLevel.userDataRepository
+        val data = userRepository.getCached(uniqueId)
+        val level = data?.getLevel(LevelCategory.PRIMARY)?.level ?: 0
         val levelComponentParsed = miniMessage.deserialize(levelFormat, Formatter.number("value", level))
         return levelComponentParsed
     }
