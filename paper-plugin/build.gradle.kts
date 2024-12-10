@@ -19,18 +19,19 @@ dependencies {
     /* external */
 
     compileOnly(local.adventurelevel)
-    compileOnly(local.economy.api)
+    compileOnly(local.economy)
     compileOnly(local.helper)
     compileOnly(local.orientation)
     compileOnly(local.towny)
     compileOnly(local.wakame.api)
+    compileOnly(local.wakame.common)
 
     /* internal */
 
     implementation(project(":common"))
 
     // network
-    implementation(local.network)
+    implementation(local.nettowaku)
 
     // configurate
     implementation(platform(libs.bom.configurate.yaml))
