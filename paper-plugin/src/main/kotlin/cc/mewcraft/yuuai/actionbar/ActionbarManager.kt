@@ -1,16 +1,15 @@
 package cc.mewcraft.yuuai.actionbar
 
-import it.unimi.dsi.fastutil.objects.Object2ObjectFunction
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap
 import org.bukkit.Server
 import org.bukkit.entity.Player
-import java.util.UUID
+import java.util.*
+import java.util.concurrent.ConcurrentHashMap
 
 class ActionbarManager(
     private val config: ActionBarConfig,
     private val server: Server
 ) {
-    private val actionbars: Object2ObjectOpenHashMap<UUID, Actionbar> = Object2ObjectOpenHashMap()
+    private val actionbars: ConcurrentHashMap<UUID, Actionbar> = ConcurrentHashMap()
 
     fun showActionbar(player: Player) {
         val components = config.actionBarComponents
@@ -18,7 +17,7 @@ class ActionbarManager(
         if (text.isBlank())
             return
 
-        actionbars.computeIfAbsent(player.uniqueId, Object2ObjectFunction { Actionbar(player, text, components) })
+        actionbars.computeIfAbsent(player.uniqueId) { Actionbar(player, text, components) }
             .show()
     }
 

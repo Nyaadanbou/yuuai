@@ -3,8 +3,6 @@ package cc.mewcraft.yuuai.scoreboard
 import cc.mewcraft.yuuai.Injector
 import cc.mewcraft.yuuai.YuuaiPlugin
 import cc.mewcraft.yuuai.component.ScoreboardComponent
-import it.unimi.dsi.fastutil.objects.Object2ObjectFunction
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
 import net.megavex.scoreboardlibrary.api.ScoreboardLibrary
@@ -13,13 +11,13 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 import org.koin.core.component.inject
 import java.util.*
-import kotlin.collections.set
+import java.util.concurrent.ConcurrentHashMap
 
 class ScoreboardManager : KoinComponent {
     private val plugin: YuuaiPlugin by inject()
     private val config: ScoreboardConfig by inject()
 
-    private val scoreboards: Object2ObjectOpenHashMap<UUID, Scoreboard> = Object2ObjectOpenHashMap()
+    private val scoreboards: ConcurrentHashMap<UUID, Scoreboard> = ConcurrentHashMap()
 
     fun showScoreboard(player: Player) {
         val layout = config.layout
@@ -39,7 +37,7 @@ class ScoreboardManager : KoinComponent {
             lines[lineKey] = ScoreboardComponentData(index, scoreboardComponent)
         }
 
-        val scoreboard = scoreboards.computeIfAbsent(player.uniqueId, Object2ObjectFunction { _ -> Scoreboard(player, lines) })
+        val scoreboard = scoreboards.computeIfAbsent(player.uniqueId) { Scoreboard(player, lines) }
 
         scoreboard.title(Component.text("Mewcraft"))
         scoreboard.show()
