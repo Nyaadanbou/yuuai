@@ -1,0 +1,5 @@
+orientation:
+  enabled: true
+  color: "green"
+  overlay: "PROGRESS"
+  text: "新人保护: <value>"

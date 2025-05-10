@@ -5,12 +5,17 @@ kotlin = "2.0.21"
 kotlinx-coroutines-core = "1.9.0"
 kotlinx-atomicfu = "0.26.0"
 koin = "3.5.3"
+scoreboardlibrary = "2.2.1"
+nettowaku = "1.0.0"
+
 paper = "1.21.1-R0.1-SNAPSHOT"
 velocity = "3.3.0-SNAPSHOT"
-guava = "33.2.1-jre"
-gson = "2.10.1"
-slf4j = "2.0.12"
+adventurelevel = "2.0.0"
+economy = "2.2.0"
 helper = "6.0.0"
+orientation = "1.0.0-SNAPSHOT"
+towny = "0.101.0.0"
+wakame = "0.0.1-SNAPSHOT"
 
 [libraries]
 
@@ -25,20 +30,30 @@ plugin-nyaadanbou-conventions = { group = "cc.mewcraft.gradle", name = "conventi
 
 # Code dependencies
 
-guava = { group = "com.google.guava", name = "guava", version.ref = "guava" }
-gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
-slf4j = { group = "org.slf4j", name = "slf4j-api", version.ref = "slf4j" }
-helper = { group = "me.lucko", name = "helper", version.ref = "helper" }
-
 kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinx-coroutines-core" }
 kotlinx-atomicfu = { group = "org.jetbrains.kotlinx", name = "atomicfu", version.ref = "kotlinx-atomicfu" }
 
-koin-core = { group = "io.insert-koin", name = "koin-core", version.ref = "koin" }
-koin-test = { group = "io.insert-koin", name = "koin-test", version.ref = "koin" }
-koin-test-junit5 = { group = "io.insert-koin", name = "koin-test-junit5", version.ref = "koin" }
+koin-bom = { group = "io.insert-koin", name = "koin-bom", version.ref = "koin" }
+koin-core = { group = "io.insert-koin", name = "koin-core" }
+koin-core-coroutines = { group = "io.insert-koin", name = "koin-core-coroutines" }
+koin-test = { group = "io.insert-koin", name = "koin-test" }
+koin-test-junit5 = { group = "io.insert-koin", name = "koin-test-junit5" }
+
+scoreboardlibrary-api = { group = "net.megavex", name = "scoreboard-library-api", version.ref = "scoreboardlibrary" }
+scoreboardlibrary-implementation = { group = "net.megavex", name = "scoreboard-library-implementation", version.ref = "scoreboardlibrary" }
+scoreboardlibrary-extra-kotlin = { group = "net.megavex", name = "scoreboard-library-extra-kotlin", version.ref = "scoreboardlibrary" }
+scoreboardlibrary-adapter-modern = { group = "net.megavex", name = "scoreboard-library-modern", version.ref = "scoreboardlibrary" }
 
 paper = { group = "io.papermc.paper", name = "paper-api", version.ref = "paper" }
 velocity = { group = "com.velocitypowered", name = "velocity-api", version.ref = "velocity" }
+adventurelevel = { group = "cc.mewcraft.adventurelevel", name = "api", version.ref = "adventurelevel" }
+economy = { group = "cc.mewcraft.economy", name = "api", version.ref = "economy" }
+helper = { group = "me.lucko", name = "helper", version.ref = "helper" }
+orientation = { group = "cc.mewcraft.orientation", name = "orientation-api", version.ref = "orientation" }
+towny = { group = "com.palmergames.bukkit.towny", name = "towny", version.ref = "towny" }
+nettowaku = { group = "cc.mewcraft.nettowaku", name = "api", version.ref = "nettowaku" }
+wakame-api = { group = "cc.mewcraft.wakame", name = "api", version.ref = "wakame" }
+wakame-common = { group = "cc.mewcraft.wakame", name = "common", version.ref = "wakame" }
 
 [plugins]
 
